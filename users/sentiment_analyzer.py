@@ -2,6 +2,14 @@ import streamlit as st
 from transformers import BertTokenizer, BertForSequenceClassification, GPT2ForSequenceClassification, GPT2Tokenizer
 import torch
 import openai
+import gdown
+import os
+
+#download model from google drive
+model_dir = './model'
+url = 'https://drive.google.com/drive/folders/175Skml7CqvbfgS14oOctFzx-7go72jak?usp=drive_link'
+if not os.path.exists(model_dir):
+    gdown.download_folder(url)
 
 st.title('📈 Sentiment Analyzer')
 
@@ -30,12 +38,12 @@ st.button('Predict')
 # model = BertForSequenceClassification.from_pretrained('yiyanghkust/finbert-tone', num_labels=3, output_hidden_states=True)
 @st.cache_resource
 def load_model():
-    model = GPT2ForSequenceClassification.from_pretrained('./model')
+    model = GPT2ForSequenceClassification.from_pretrained(model_dir)
     return model
 
 @st.cache_resource
 def load_tokenizer():
-    tokenizer = GPT2Tokenizer.from_pretrained('./model')
+    tokenizer = GPT2Tokenizer.from_pretrained(model_dir)
     return tokenizer
 #------------------------------------------------------------------------------------------------------------------------------
 # Tokenize the input

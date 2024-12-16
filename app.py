@@ -125,7 +125,7 @@ def forgotPassword():
 
 #Home function (show login page first)
 def home():
-    st.title('Welcome to Sentiment Analyzer Dashboard')
+    st.title('🎉 Welcome to :blue[Sentiment Analyzer Dashboard]')
     st.divider()
     role = st.selectbox("Choose your role", ROLES)
     # st.header("", divider="blue")
