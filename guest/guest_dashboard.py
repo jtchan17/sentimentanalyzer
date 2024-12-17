@@ -87,8 +87,32 @@ with r1c1:
 
 with r1c2:
     st.subheader('Highest Price Across Years')
-    query = 'SELECT YEAR(date) as Year, company AS Companies, MAX(high) AS Highest FROM dashboard.stockprice WHERE YEAR(date) in (2021, 2022, 2023) GROUP BY Companies, Year ORDER BY Year DESC, Highest DESC;'
-    df_highest = conn.query(query, ttl=600)
+    # query = 'SELECT YEAR(date) as Year, company AS Companies, MAX(high) AS Highest FROM dashboard.stockprice WHERE YEAR(date) in (2021, 2022, 2023) GROUP BY Companies, Year ORDER BY Year DESC, Highest DESC;'
+    # df_highest = conn.query(query, ttl=600)
+
+    df = pd.DataFrame(df_sp)
+
+    # Step 1: Convert 'date' column to datetime format
+    df['date'] = pd.to_datetime(df['date'])
+
+    # Step 2: Extract the 'Year' from the 'date' column
+    df['Year'] = df['date'].dt.year
+
+    # Step 3: Filter the years 2021, 2022, and 2023
+    filtered_df = df[df['Year'].isin([2021, 2022, 2023])]
+
+    # Step 4: Group by 'Year' and 'company', and get the maximum 'high' value
+    result = (
+        filtered_df
+        .groupby(['Year', 'company'], as_index=False)
+        .agg(Highest=('high', 'max'))  # Rename the aggregated column to 'Highest'
+    )
+
+    # Step 5: Sort the result by 'Year' (descending) and 'Highest' (descending)
+    df_highest = result.sort_values(by=['Year', 'Highest'], ascending=[False, False])
+
+    # Step 6: Rename the 'company' column to 'Companies' (to match your SQL output)
+    df_highest.rename(columns={'company': 'Companies'}, inplace=True)
 
     # def filter_years(df):
     #     df['date'] = pd.to_datetime(df['date'])
