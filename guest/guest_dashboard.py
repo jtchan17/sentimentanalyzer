@@ -12,6 +12,7 @@ from streamlit.components.v1 import iframe
 import plotly.io as pio
 import matplotlib.pyplot as plt
 import os
+import json
 
 #####################################################################
 PDF_TEMPLATE_FILE = 'PDFtemplate.html'
@@ -34,16 +35,21 @@ IMG_FOLDER = os.path.join(os.getcwd(), 'image')
 
 @st.cache_data
 def load_financial_data():
-    df = pd.read_csv('Financial_News.csv')
-    return df
+    with open("financialnews.json", "r") as json_file:
+        financialnews_data = json.load(json_file)
+    # df = pd.read_csv('Financial_News.csv')
+    return financialnews_data
 
 @st.cache_data
 def load_stock_data():
-    df = pd.read_csv('Stock_Prices.csv')
-    return df
+    with open("stockprices.json", "r") as json_file:
+        stockprices_data = json.load(json_file)
+    return stockprices_data
 
 df_fn = load_financial_data()
 df_sp = load_stock_data
+df_fn = pd.DataFrame(df_fn)
+df_sp = pd.DataFrame(df_sp)
 alt.themes.enable("dark")
 
 #####################################################################
@@ -61,19 +67,19 @@ with st.sidebar:
 st.title('📈 Sentiment Analyzer :blue[Dashboard] of Stock Prices')
 
 ###### Filter based on Year and Company ######
-def query(table, year, companies):
-    query = f'SELECT * FROM dashboard.{table} WHERE '
-    if year != 'All':
-        query += f'YEAR(published_date) = {year} ' if table == 'financialnews' else f'YEAR(date) = {year} '
-        if companies:
-            companies_str = ', '.join(f'"{company}"' for company in companies)
-            query += f'AND company IN ({companies_str})'
-        return query
-    else:
-        if companies:
-            companies_str = ', '.join(f'"{company}"' for company in companies)
-            query += f'company IN ({companies_str})'
-        return query
+# def query(table, year, companies):
+#     query = f'SELECT * FROM dashboard.{table} WHERE '
+#     if year != 'All':
+#         query += f'YEAR(published_date) = {year} ' if table == 'financialnews' else f'YEAR(date) = {year} '
+#         if companies:
+#             companies_str = ', '.join(f'"{company}"' for company in companies)
+#             query += f'AND company IN ({companies_str})'
+#         return query
+#     else:
+#         if companies:
+#             companies_str = ', '.join(f'"{company}"' for company in companies)
+#             query += f'company IN ({companies_str})'
+#         return query
 
 
 #====================================================================
