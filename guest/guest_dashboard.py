@@ -47,7 +47,7 @@ def load_stock_data():
     return stockprices_data
 
 df_fn = load_financial_data()
-df_sp = load_stock_data
+df_sp = load_stock_data()
 df_fn = pd.DataFrame(df_fn)
 df_sp = pd.DataFrame(df_sp)
 alt.themes.enable("dark")
