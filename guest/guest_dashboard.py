@@ -22,15 +22,28 @@ IMG_FOLDER = os.path.join(os.getcwd(), 'image')
 # menu_with_redirect()
 
 # Initialize connection.
-conn = st.connection('mysql', type='sql')
+# conn = st.connection('mysql', type='sql')
 
 # Loading the data
-@st.cache_resource
-def load_data(query):
-    df = conn.query(query, ttl=600)
+# @st.cache_resource
+# def load_data(query):
+#     df = conn.query(query, ttl=600)
+#     return df
+# df_fn = load_data('SELECT * from dashboard.financialnews;')
+# df_sp = load_data('SELECT * from dashboard.stockprice;')
+
+@st.cache_data
+def load_financial_data():
+    df = pd.read_csv('Financial_News.csv')
     return df
-df_fn = load_data('SELECT * from dashboard.financialnews;')
-df_sp = load_data('SELECT * from dashboard.stockprice;')
+
+@st.cache_data
+def load_stock_data():
+    df = pd.read_csv('Stock_Prices.csv')
+    return df
+
+df_fn = load_financial_data()
+df_sp = load_stock_data
 alt.themes.enable("dark")
 
 #####################################################################
