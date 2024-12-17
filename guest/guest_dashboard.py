@@ -146,10 +146,10 @@ with r2c1:
 
 with r2c2:
     st.subheader('Frequency of News Over Time')
-    df_article_freq = df_fn.groupby(['published_date', 'company']).size().unstack(fill_value=0)
+    df_article_freq = df_fn.groupby(['published date', 'company']).size().unstack(fill_value=0)
     df_article_freq = df_article_freq.reset_index()
-    df_melted = pd.melt(df_article_freq, id_vars='published_date', var_name='company', value_name='frequency')
-    chart_FrequencyofNewsOverTime = px.line(df_melted, x='published_date', y="frequency", template='gridon', color='company')
+    df_melted = pd.melt(df_article_freq, id_vars='published date', var_name='company', value_name='frequency')
+    chart_FrequencyofNewsOverTime = px.line(df_melted, x='published date', y="frequency", template='gridon', color='company')
     st.plotly_chart(chart_FrequencyofNewsOverTime,use_container_width=True)
 #====================================================================
 #ROW 3
