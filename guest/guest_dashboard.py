@@ -111,7 +111,7 @@ with r1c2:
     result = (
         filtered_df
         .groupby(['Year', 'company'], as_index=False)
-        .agg(Highest=('high', 'max'))  # Rename the aggregated column to 'Highest'
+        .agg(Highest=('High', 'max'))  # Rename the aggregated column to 'Highest'
     )
 
     # Step 5: Sort the result by 'Year' (descending) and 'Highest' (descending)
