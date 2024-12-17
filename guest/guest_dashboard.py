@@ -88,7 +88,7 @@ r1c1, r1c2 = st.columns((7, 3), gap='small')
 with r1c1:
     st.subheader('Historical Stock Data')
     st.markdown('###### currency in USD')
-    chart_HistoricalStockData = px.line(df_sp, x='date', y='adj_close', template='gridon', color='company')
+    chart_HistoricalStockData = px.line(df_sp, x='Date', y='Adj Close', template='gridon', color='company')
     st.plotly_chart(chart_HistoricalStockData, key='chart_HistoricalStockData', use_container_width=True)   
 
 with r1c2:
@@ -99,10 +99,10 @@ with r1c2:
     df = pd.DataFrame(df_sp)
 
     # Step 1: Convert 'date' column to datetime format
-    df['date'] = pd.to_datetime(df['date'])
+    df['Date'] = pd.to_datetime(df['Date'])
 
     # Step 2: Extract the 'Year' from the 'date' column
-    df['Year'] = df['date'].dt.year
+    df['Year'] = df['Date'].dt.year
 
     # Step 3: Filter the years 2021, 2022, and 2023
     filtered_df = df[df['Year'].isin([2021, 2022, 2023])]
