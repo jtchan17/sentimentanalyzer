@@ -12,6 +12,7 @@ import plotly.io as pio
 import matplotlib.pyplot as plt
 import os
 from wordcloud import WordCloud, STOPWORDS
+import json
 
 ##########################################################################################################################################
 PDF_TEMPLATE_FILE = 'PDFtemplate.html'
@@ -21,17 +22,35 @@ IMG_FOLDER = os.path.join(os.getcwd(), 'image')
 # Redirect to app.py if not logged in, otherwise show the navigation menu
 # menu_with_redirect()
 
-# Initialize connection.
-conn = st.connection('mysql', type='sql')
+# # Initialize connection.
+# conn = st.connection('mysql', type='sql')
 
-# Loading the data
-@st.cache_data
-def load_data(query):
-    df = conn.query(query, ttl=600)
-    return df
-df_fn = load_data('SELECT * from dashboard.fnwithtopics;')
-df_sp = load_data('SELECT * from dashboard.stockprice;')
+# # Loading the data
+# @st.cache_data
+# def load_data(query):
+#     df = conn.query(query, ttl=600)
+#     return df
+# df_fn = load_data('SELECT * from dashboard.fnwithtopics;')
+# df_sp = load_data('SELECT * from dashboard.stockprice;')
 alt.themes.enable("dark")
+
+@st.cache_data
+def load_financial_data():
+    with open("financial_news.json", "r") as json_file:
+        financialnews_data = json.load(json_file)
+    # df = pd.read_csv('Financial_News.csv')
+    return financialnews_data
+
+@st.cache_data
+def load_stock_data():
+    with open("stockprices.json", "r") as json_file:
+        stockprices_data = json.load(json_file)
+    return stockprices_data
+
+df_fn = load_financial_data()
+df_sp = load_stock_data()
+df_fn = pd.DataFrame(df_fn)
+df_sp = pd.DataFrame(df_sp)
 
 ##########################################################################################################################################
 
@@ -39,7 +58,7 @@ alt.themes.enable("dark")
 # Side bar (Login)
 with st.sidebar:
     # st.title(f'Welcome {st.session_state.role}! :sunglasses:')
-    st.title(f'Welcome {st.session_state.username}! :sunglasses:')
+    # st.title(f'Welcome {st.session_state.username}! :sunglasses:')
     custom_colors = {
         'Red': '#EF553B',
         'Blue': '#636EFA',
@@ -317,19 +336,37 @@ with fil_col3:
     btn_clear = st.button('Clear All Filter', key='clearFilter', on_click=clear_filters)
 
 ###### Filter based on Year and Company ######
-def query(table, year, companies):
-    query = f'SELECT * FROM dashboard.{table} WHERE '
-    if year != 'All':
-        query += f'YEAR(published_date) = {year} ' if table == 'fnwithtopics' else f'YEAR(date) = {year} '
-        if companies:
-            companies_str = ', '.join(f'"{company}"' for company in companies)
-            query += f'AND company IN ({companies_str})'
-        return query
+# def query(table, year, companies):
+#     query = f'SELECT * FROM dashboard.{table} WHERE '
+#     if year != 'All':
+#         query += f'YEAR(published_date) = {year} ' if table == 'fnwithtopics' else f'YEAR(date) = {year} '
+#         if companies:
+#             companies_str = ', '.join(f'"{company}"' for company in companies)
+#             query += f'AND company IN ({companies_str})'
+#         return query
+#     else:
+#         if companies:
+#             companies_str = ', '.join(f'"{company}"' for company in companies)
+#             query += f'company IN ({companies_str})'
+#         return query
+
+def filter_data(dfname, year, companies):
+    df=''
+    # determine the column name
+    if dfname == 'df_fn':
+        date_column = 'published date'
+        df = df_fn
     else:
-        if companies:
-            companies_str = ', '.join(f'"{company}"' for company in companies)
-            query += f'company IN ({companies_str})'
-        return query
+        date_column = 'Date'
+        df = df_sp
+
+    df[date_column] = pd.to_datetime(df[date_column])
+    if year !='All':
+        df = df[df[date_column].dt.year == int(year)]
+    if companies:
+        df = df[df['company'].isin(companies)]
+
+    return df
 
 # List of selected companies
 selected_companies = [company for company, selected in companies.items() if selected]
@@ -339,10 +376,10 @@ if select_year == 'All' and not selected_companies:
     filtered_df_fn = df_fn
     filtered_df_sp = df_sp
 else:
-    fn_query = query('fnwithtopics', select_year, selected_companies)
-    sp_query = query('stockprice', select_year, selected_companies)
-    filtered_df_fn = conn.query(fn_query, ttl=10000)
-    filtered_df_sp = conn.query(sp_query, ttl=10000)
+    filtered_df_fn = filter_data('df_fn', select_year, selected_companies)
+    filtered_df_sp = filter_data('df_sp', select_year, selected_companies)
+    # filtered_df_fn = conn.query(fn_query, ttl=10000)
+    # filtered_df_sp = conn.query(sp_query, ttl=10000)
 
 #======================================================================================================================================== 
 #ROW 1
@@ -358,7 +395,7 @@ with r1c1:
         unsafe_allow_html=True,
     )
     # st.markdown(f'###### {final_font_colour}[currency in USD]')
-    chart_HistoricalStockData = px.line(filtered_df_sp, x='date', y='adj_close', template='gridon', color='company', 
+    chart_HistoricalStockData = px.line(filtered_df_sp, x='Date', y='Adj Close', template='gridon', color='company', 
                                         color_discrete_map={'AAPL': final_aapl_colour,
                                                             'AMZN': final_amzn_colour,
                                                             'TSLA': final_tsla_colour,
@@ -381,15 +418,15 @@ with r1c2:
     # df_highest = conn.query(query, ttl=600)
 
     def filter_years(df, year):
-        df['date'] = pd.to_datetime(df['date'])
+        df['Date'] = pd.to_datetime(df['Date'])
         if year != 'All':
             # df_filtered = df[df['date']].dt.year
-            df['year'] = df['date'].dt.year
+            df['year'] = df['Date'].dt.year
         else:
-            df['year'] = df['date'].dt.year
+            df['year'] = df['Date'].dt.year
             
-        result = df.groupby(['year', 'company']).agg({'high': 'max'}).reset_index()
-        result.rename(columns={'year': 'Year', 'company': 'Companies', 'high': 'Highest'}, inplace=True)
+        result = df.groupby(['year', 'company']).agg({'High': 'max'}).reset_index()
+        result.rename(columns={'year': 'Year', 'company': 'Companies', 'High': 'Highest'}, inplace=True)
         result = result.sort_values(by=['Year', 'Highest'], ascending=[True, False])
         result = result.reset_index(drop=True)
         return result
@@ -426,10 +463,10 @@ with r2c2:
         """,
         unsafe_allow_html=True,
     )
-    df_article_freq = filtered_df_fn.groupby(['published_date', 'company']).size().unstack(fill_value=0)
+    df_article_freq = filtered_df_fn.groupby(['published date', 'company']).size().unstack(fill_value=0)
     df_article_freq = df_article_freq.reset_index()
-    df_melted = pd.melt(df_article_freq, id_vars='published_date', var_name='company', value_name='frequency')
-    chart_FrequencyofNewsOverTime = px.line(df_melted, x='published_date', y="frequency", template='gridon', color='company',
+    df_melted = pd.melt(df_article_freq, id_vars='published date', var_name='company', value_name='frequency')
+    chart_FrequencyofNewsOverTime = px.line(df_melted, x='published date', y="frequency", template='gridon', color='company',
                                             color_discrete_map={'AAPL': final_aapl_colour,
                                                                 'AMZN': final_amzn_colour,
                                                                 'TSLA': final_tsla_colour,
@@ -474,28 +511,28 @@ with pop_col2:
 
     # #List of Topics
     topics = {
-        'Politics\r': politics,
-        'Economy\r': economy,
-        'Technology\r': technology,
-        'Health\r': health,
-        'Sports\r': sports,
-        'Entertainment\r': entertainment,
-        'Science\r': science,
-        'Business\r': business,
-        'Travel\r': travel,
-        'Education\r': education,
-        'Lifestyle\r': lifestyle,
-        'Finance\r': finance,
-        'Investing\r': investing,
-        'Wellness\r': wellness,}
+        'Politics': politics,
+        'Economy': economy,
+        'Technology': technology,
+        'Health': health,
+        'Sports': sports,
+        'Entertainment': entertainment,
+        'Science': science,
+        'Business': business,
+        'Travel': travel,
+        'Education': education,
+        'Lifestyle': lifestyle,
+        'Finance': finance,
+        'Investing': investing,
+        'Wellness': wellness,}
 
     # selected_topics = [topic for topic, select in topics.items() if select]
     selected_topics = [topic for topic, select in topics.items() if select]
 
-    def filter_topics(dffn):
-        if selected_topics:
-            dffn = dffn[dffn['topics'].isin(selected_topics)]
-        return dffn
+def filter_topics(dffn):
+    if selected_topics:
+        dffn = dffn[dffn['topic'].isin(selected_topics)]
+    return dffn
     
 r3c1, r3c2 = st.columns((5,5), gap='small')
 with r3c1:
@@ -547,10 +584,11 @@ with r3c2:
     #Sentiments Distribution by Topic
     # st.dataframe(df_fn1)
     df_fn1 = filter_topics(df_fn1)
+    # st.dataframe(df_fn1)
     chart_TopicFrequency = px.histogram(
         df_fn1, 
         x='sentiment_score', 
-        color='topics', 
+        color='topic', 
         labels={'sentiment_score': 'Sentiments', 'count': 'Total'},
         template='plotly_dark'
     )
