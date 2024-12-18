@@ -2,6 +2,26 @@ import streamlit as st
 import pandas as pd
 from sqlalchemy.sql import text
 import os
+# import firebase_admin
+# from firebase_admin import credentials, auth, firestore
+import pyrebase
+import json
+
+#initialize firebase
+config = {
+  "apiKey": "AIzaSyAaRg0x_NjEc-xPfgXA0DW0wgmkzq8rIMw",
+  "authDomain": "sentimentanalyzer-4bd42.firebaseapp.com",
+  "projectId": "sentimentanalyzer-4bd42",
+  "databaseURL": "https://sentimentanalyzer-4bd42-default-rtdb.asia-southeast1.firebasedatabase.app/",
+  "storageBucket": "sentimentanalyzer-4bd42.firebasestorage.app",
+  "messagingSenderId": "694050098907",
+  "appId": "1:694050098907:web:a0f7e83f9e997350fdc6fe",
+  "measurementId": "G-QJMP88TBJ1"
+}
+firebase = pyrebase.initialize_app(config)
+auth = firebase.auth()
+db = firebase.database()
+storage = firebase.storage()
 
 # Page configuration
 st.set_page_config(
@@ -21,44 +41,6 @@ def check_hashes(password,hashed_text):
 		return hashed_text
 	return False
 
-# DB Management
-conn = st.connection('mysql', "sql")
-session = conn.session
-
-#######################################################################################################
-# DB  Functions
-def create_usertable():
-	session.execute('CREATE TABLE IF NOT EXISTS dashboard.users (username TEXT,password TEXT)')
-
-def add_userdata(username,password):
-	query = text('INSERT INTO dashboard.users (username,password) VALUES (:username, :password)')
-	session.execute(query, {"username": username, "password": password})
-	session.commit()
-
-def login_user(username,password):
-    query = text('SELECT * FROM dashboard.users WHERE username = :username AND password = :password')
-    data = session.execute(query, {"username": username, "password": password}).fetchone()
-    return data if data else None
-
-def view_all_users():
-	data = session.execute(text('SELECT * FROM dashboard.users'))
-	return data
-
-def check_user_n_password(username, password):
-    query1 = text('SELECT * FROM dashboard.users WHERE BINARY username = :username AND password = :password')
-    data = session.execute(query1, {"username": username, "password": make_hashes(password)}).fetchone()
-    return data
-
-def check_user(username):
-    query1 = text('SELECT * FROM dashboard.users WHERE BINARY username = :username')
-    data = session.execute(query1, {"username": username}).fetchone()
-    return data
-
-def update_userdata(username, password):
-    query1 = text('UPDATE dashboard.users SET password = :password WHERE username = :username')
-    session.execute(query1, {"username": username, "password": password})
-    session.commit()
-
 #######################################################################################################
 
 if "role" not in st.session_state:
@@ -67,114 +49,108 @@ if "role" not in st.session_state:
 if "username" not in st.session_state:
     st.session_state.username = None
 
+if "email" not in st.session_state:
+     st.session_state.email = None
+
 ROLES = [None, "User", "Guest"]
 
 #Sign up dialog to create new user account
 @st.dialog("Create New Account")
 def signup():
 
-    new_user = st.text_input("Username", key='signupUsername')
+    new_email = st.text_input("Email", key="signupEmail")
+    new_username = st.text_input("Username", key='signupUsername')
     new_password = st.text_input("Password", key='signupPassword', type='password')
-
-    #checking
-    user_n_pw_check = check_user_n_password(new_user, new_password)
-    user_check = check_user(new_user)
+    new_confirm_password = st.text_input("Confirm Password", key='signupConfirmPassword', type='password')
 
     signupButton = st.button("Sign up")
 
     if signupButton:
-        if new_user != '' and new_password != '':
-            if user_n_pw_check: #account already existed
-                st.warning('This account has been created.')
-            elif user_check: #username already exixted
-                st.warning('Username has been used. Please fill in a new username.')
-            else:              
-                add_userdata(new_user,make_hashes(new_password))
-                st.success("You have successfully created a valid Account")
-                st.info("Go to Login Menu to login")
-                # Clear the session state after successful signup
-            # st.session_state.signupUsername = ""
-            # st.session_state.signupPassword = ""
+        if not new_username or not new_email or not new_password or not new_confirm_password:
+            st.error('Please fill in all fields.')
+        elif new_password != new_confirm_password:
+             st.error("Password do not match!")
         else:
-            st.warning('Please fill in the empty fields.')
-
-    # Check if the dialog is closed and reset the input values
-    # if not st.session_state.get('dialog_open', True):
-    #     st.session_state.signupUsername = ""
-    #     st.session_state.signupPassword = ""
+            try:
+                # Create user in Firebase Authentication
+                user = auth.create_user_with_email_and_password(email=new_email, password=new_password)
+                #Set id and username in real-time database
+                db.child(user['localId']).child("Username").set(new_username)
+                db.child(user['localId']).child("ID").set(user['localId'])
+                st.success("You have successfully created a valid Account")
+                st.info('Please proceed to login using email and password.')
+            except Exception as e:
+                    st.error("Error!")
 
 #A dialog for user who forgot the password
 @st.dialog('Forgot your password?')
 def forgotPassword():
-    username = st.text_input('Please provide your username')
-    existed_user = check_user(username)
-    if existed_user:
-        new_password = st.text_input('New Password', type='password')
-        confirm_password = st.text_input('Confirm Password', type='password')
-        confirm_button = st.button('Submit')
-        if confirm_button:
-            if new_password == confirm_password:
-                update_userdata(username, make_hashes(confirm_password))
-                st.success('Password update successfully. Please proceed to log in')
-            else:
-                 st.error('Password do not match')
-    elif username == '':
-         st.write('')
-    else:
-        st.warning('No such user exists.')
+    email  = st.text_input('Please provide your email')
+    submit = st.button('Submit', key='forgotPasswordSubmitButton')
+    if submit:
+        if email:
+            try:
+                # Send password reset email
+                auth.send_password_reset_email(email)
+                st.success("Password reset email sent! Check your inbox.")
+            except Exception as e:
+                st.error(f"Error: {json.loads(e.args[1])['error']['message']}")
+        else:
+            st.error("Please enter your email address.")
 
 #Home function (show login page first)
 def home():
     st.title('🎉 Welcome to :blue[Sentiment Analyzer Dashboard]')
     st.divider()
     role = st.selectbox("Choose your role", ROLES)
-    # st.header("", divider="blue")
-    loginUsername = ''
     if role == "User":
         st.subheader("Log in", divider=True)
-        keyLoginUsername  = 'loginUsername'
-        keyLoginPassword = 'loginPassword'
-        loginUsername = st.text_input("Username", key=keyLoginUsername)
-        loginPassword = st.text_input("Password", key=keyLoginPassword, type='password')
+        loginEmail = st.text_input("Email", key='loginEmail')
+        # loginUsername = st.text_input("Username", key='loginUsername')
+        loginPassword = st.text_input("Password", key='loginPassword', type='password')
 
         col1, col2 = st.columns([3.5, 1])
         with col1:
             login_Button = st.button("Login")
         with col2:
-            forgotPassword_Button = st.button('Forgot Password')
-            if forgotPassword_Button:
-                 forgotPassword()
+            st.button('Forgot Password', on_click=forgotPassword)
+
         st.write('')
+
         col3, col4, col5 = st.columns(3)
         with col4:
-            signup_Button = st.button('New User? Click here.')
-            if signup_Button:
-                signup()
+            st.button('New User? Click here.', on_click=signup)
 
         if login_Button:
-            hashed_pswd = make_hashes(loginPassword)
-            result = login_user(loginUsername,check_hashes(loginPassword,hashed_pswd))
-            print("Login result:", result)
-            if result is None or not result:
-                st.warning("Incorrect Username/Password") 
-            else:
-                st.success("Logged In as {}".format(loginUsername))
+            try:
+                user = auth.sign_in_with_email_and_password(email=loginEmail, password=loginPassword)
+                 # Fetch user details from Firestore
+                db.child(user['localId']).child("Username").get()
+                user_data = db.child(user['localId']).child("Username").get().val()
+                st.write(user_data)
                 st.session_state.role = role
-                st.session_state.username = loginUsername
-                st.rerun()  
-    else:
+                st.session_state.username = user_data
+                st.session_state.email = loginEmail
+                st.rerun()
+            except Exception as e:
+                st.error(f"Error: {json.loads(e.args[1])['error']['message']}")
+                st.warning('Incorrect Username/Password.')
+    elif role == "Guest":
         if st.button("Log in"):
             st.session_state.role = role
-            st.session_state.username = loginUsername
+            st.session_state.username = None
+            st.session_state.email = None
             st.rerun()
 
 def logout():
     st.session_state.role = None
     st.session_state.username = None
+    st.session_state.email = None
     st.rerun()
 
 role = st.session_state.role
 username = st.session_state.username
+email = st.session_state.email
 
 logout_page = st.Page(logout, title="Log out", icon=":material/logout:")
 settings_page = st.Page("users/edit_profile.py", title="Edit Profile", icon=":material/edit:")
