@@ -1,6 +1,4 @@
 import streamlit as st
-from sqlalchemy.sql import text
-import hashlib
 import pyrebase
 import json
 
@@ -19,9 +17,6 @@ auth = firebase.auth()
 db = firebase.database()
 user = auth.current_user
 st.write(user)
-
-def make_hashes(password):
-	return hashlib.sha256(str.encode(password)).hexdigest()
      
 st.header("Update Your Profile")
 st.write(f"Your username is :violet[{st.session_state.username}].")
