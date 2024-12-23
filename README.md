@@ -1,2 +1,2 @@
 # Sentiment Analyzer
-This is used for Streamlit community deploymeny
+This is used for Streamlit community deployment
