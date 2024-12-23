@@ -676,7 +676,7 @@ with fil_col4:
     tp_table_html = getTableHTML(table_TopPublishers, False, 1)
 
     try:
-        wkhtml_path = pdfkit.configuration(wkhtmltopdf = WKHTMLTOPDF_PATH)
+        wkhtml_path = pdfkit.configuration(wkhtmltopdf = '/usr/bin/wkhtmltopdf')
         
         
 
