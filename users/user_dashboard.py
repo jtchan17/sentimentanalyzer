@@ -19,7 +19,8 @@ from pyxlsb import open_workbook as open_xlsb
 ##########################################################################################################################################
 PDF_TEMPLATE_FILE = 'PDFtemplate.html'
 IMG_FOLDER = os.path.join(os.getcwd(), 'image')
-
+WKHTMLTOPDF_PATH = os.path.join(os.getcwd(), 'wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+print(WKHTMLTOPDF_PATH)
 ##########################################################################################################################################
 alt.themes.enable("dark")
 
@@ -675,7 +676,7 @@ with fil_col4:
     tp_table_html = getTableHTML(table_TopPublishers, False, 1)
 
     try:
-        wkhtml_path = pdfkit.configuration(wkhtmltopdf = 'C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe')
+        wkhtml_path = pdfkit.configuration(wkhtmltopdf = WKHTMLTOPDF_PATH)
         
         
 
