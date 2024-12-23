@@ -13,25 +13,14 @@ import matplotlib.pyplot as plt
 import os
 from wordcloud import WordCloud, STOPWORDS
 import json
+from io import BytesIO
+from pyxlsb import open_workbook as open_xlsb
 
 ##########################################################################################################################################
 PDF_TEMPLATE_FILE = 'PDFtemplate.html'
 IMG_FOLDER = os.path.join(os.getcwd(), 'image')
 
 ##########################################################################################################################################
-# Redirect to app.py if not logged in, otherwise show the navigation menu
-# menu_with_redirect()
-
-# # Initialize connection.
-# conn = st.connection('mysql', type='sql')
-
-# # Loading the data
-# @st.cache_data
-# def load_data(query):
-#     df = conn.query(query, ttl=600)
-#     return df
-# df_fn = load_data('SELECT * from dashboard.fnwithtopics;')
-# df_sp = load_data('SELECT * from dashboard.stockprice;')
 alt.themes.enable("dark")
 
 @st.cache_data
@@ -94,8 +83,6 @@ with st.sidebar:
     font_style = ['normal', 'italic']
 
     st.subheader('Text', divider=True)
-    # text_colour_selection = st.selectbox('Colour', options=list(font_colors.keys()), index=0)
-    # final_font_colour = font_colors[text_colour_selection]
     font_family_selection = st.selectbox('Font Family', options=list(font_family.keys()), index=0)
     final_font_family = font_family[font_family_selection]
     font_style_selection = st.selectbox('Style', font_style, index=0)
@@ -229,18 +216,6 @@ st.markdown(
 )
 
 #DataFrame
-# st.markdown(
-#     f"""
-#     <style>
-#     div[data-testid="stDataFrame"] > div > div[class="stDataFrameGlideDataEditor gdg-wmyidgi"] > div > div[class="gdg-sldgczr6"] > div > canvas[data-testid="data-grid-canvas"]{{
-#         background-color: #555555
-#         font-family: {final_font_family}; /* Change to desired font */
-#         font-style: {font_style_selection}
-#     }}
-#     </style>
-#     """,
-#     unsafe_allow_html=True
-# )
 st.markdown(
     f"""
     <style>
@@ -336,20 +311,6 @@ with fil_col3:
     btn_clear = st.button('Clear All Filter', key='clearFilter', on_click=clear_filters)
 
 ###### Filter based on Year and Company ######
-# def query(table, year, companies):
-#     query = f'SELECT * FROM dashboard.{table} WHERE '
-#     if year != 'All':
-#         query += f'YEAR(published_date) = {year} ' if table == 'fnwithtopics' else f'YEAR(date) = {year} '
-#         if companies:
-#             companies_str = ', '.join(f'"{company}"' for company in companies)
-#             query += f'AND company IN ({companies_str})'
-#         return query
-#     else:
-#         if companies:
-#             companies_str = ', '.join(f'"{company}"' for company in companies)
-#             query += f'company IN ({companies_str})'
-#         return query
-
 def filter_data(dfname, year, companies):
     df=''
     # determine the column name
@@ -378,8 +339,6 @@ if select_year == 'All' and not selected_companies:
 else:
     filtered_df_fn = filter_data('df_fn', select_year, selected_companies)
     filtered_df_sp = filter_data('df_sp', select_year, selected_companies)
-    # filtered_df_fn = conn.query(fn_query, ttl=10000)
-    # filtered_df_sp = conn.query(sp_query, ttl=10000)
 
 #======================================================================================================================================== 
 #ROW 1
@@ -394,7 +353,6 @@ with r1c1:
         """,
         unsafe_allow_html=True,
     )
-    # st.markdown(f'###### {final_font_colour}[currency in USD]')
     chart_HistoricalStockData = px.line(filtered_df_sp, x='Date', y='Adj Close', template='gridon', color='company', 
                                         color_discrete_map={'AAPL': final_aapl_colour,
                                                             'AMZN': final_amzn_colour,
@@ -414,8 +372,6 @@ with r1c2:
         """,
         unsafe_allow_html=True,
     )
-    # query = 'SELECT YEAR(date) as Year, company AS Companies, MAX(high) AS Highest FROM dashboard.stockprice WHERE YEAR(date) in (2021, 2022, 2023) GROUP BY Companies, Year ORDER BY Year DESC, Highest DESC;'
-    # df_highest = conn.query(query, ttl=600)
 
     def filter_years(df, year):
         df['Date'] = pd.to_datetime(df['Date'])
@@ -434,7 +390,6 @@ with r1c2:
     table_HighestPriceAcrossYear = filter_years(filtered_df_sp, select_year)
     table_HighestPriceAcrossYear = table_HighestPriceAcrossYear
     st.table(table_HighestPriceAcrossYear)
-    # st.table(table_HighestPriceAcrossYear.style.set_properties(**{"color": f"{text_colour_selection}"}))
 #======================================================================================================================================== 
 #ROW 2
 r2c1, r2c2 = st.columns((3, 5), gap='small')
@@ -451,7 +406,6 @@ with r2c1:
     table_NumberofNewsAcrossCompanies = filtered_df_fn.groupby('company')['title'].count().reset_index(name='Total')
     table_NumberofNewsAcrossCompanies = table_NumberofNewsAcrossCompanies
     st.table(table_NumberofNewsAcrossCompanies)
-    # st.table(table_NumberofNewsAcrossCompanies.style.set_properties(**{"color": f"{text_colour_selection}"}))
 
 with r2c2:
     # st.subheader(f'{final_font_colour}[Frequency of News Over Time]')
@@ -526,7 +480,6 @@ with pop_col2:
         'Investing': investing,
         'Wellness': wellness,}
 
-    # selected_topics = [topic for topic, select in topics.items() if select]
     selected_topics = [topic for topic, select in topics.items() if select]
 
 def filter_topics(dffn):
@@ -569,7 +522,6 @@ with r3c1:
     grouped_sentiment_df_fn.rename(columns={'company': 'Companies', 'negative': 'Negative', 'neutral': 'Neutral', 'positive': 'Positive'}, inplace=True)
     table_SentimentFrequency = grouped_sentiment_df_fn
     st.table(table_SentimentFrequency)
-    # st.table(table_SentimentFrequency.style.set_properties(**{"color": f"{text_colour_selection}"}))
 
 with r3c2:
     # st.subheader(f'{final_font_colour}[Sentiment Score Across Companies]')
@@ -582,9 +534,7 @@ with r3c2:
         unsafe_allow_html=True,
     )
     #Sentiments Distribution by Topic
-    # st.dataframe(df_fn1)
     df_fn1 = filter_topics(df_fn1)
-    # st.dataframe(df_fn1)
     chart_TopicFrequency = px.histogram(
         df_fn1, 
         x='sentiment_score', 
@@ -604,7 +554,6 @@ with r3c2:
     stopwords.update(filtered_df_fn['company'].tolist())
     stopwords.update(filtered_df_fn['publisher'].tolist())
     stopwords.update(['Apple', 'Tesla', 'Meta', 'Amazon', 'Microsoft'])
-    # stopwords.update(["META", "TSLA", "AMZN", "AAPL", "MSFT", 'Microsoft', 'Tesla', 'Apple', 'Amazon'])
 
     # Generate a word cloud image
     wordcloud = WordCloud(stopwords=stopwords, background_color="black").generate(text)
@@ -658,20 +607,29 @@ with r4c2:
 #======================================================================================================================================== 
 # Tab
 pricing_data, news = st.tabs(['Stock Price', 'News'])
+def to_excel(df):
+    output = BytesIO()
+    writer = pd.ExcelWriter(output, engine='xlsxwriter')
+    df.to_excel(writer, index=False, sheet_name='Sheet1')
+    workbook = writer.book
+    worksheet = writer.sheets['Sheet1']
+    format1 = workbook.add_format({'num_format': '0.00'}) 
+    worksheet.set_column('A:A', None, format1)  
+    writer.close()
+    processed_data = output.getvalue()
+    return processed_data
+
 with pricing_data:
-#     st.subheader('Stock Price')
-#     with st.container(height=500, border=True):
-#         st.table(filtered_df_sp)
-    csv=filtered_df_sp.to_csv(index = False).encode('utf-8')
-    st.download_button(label='Download Historical Data', data= csv, file_name='Historical Data.csv')
+    historical_csv=filtered_df_sp.to_csv(index = False).encode('utf-8')
+    historical_xlsx = to_excel(filtered_df_sp)
+    st.download_button(label=':material/download: CSV File', data= historical_csv, file_name='Historical Data.csv')
+    st.download_button(label=':material/download: Excel File', data= historical_xlsx, file_name='Historical Data.xlsx')
 
 with news:
-    # st.subheader('Financial News')
-#     with st.container(height=500, border=True):
-#         df_fn1 = filtered_df_fn.sort_values(by="published_date", ascending=True)
-#         st.table(df_fn)
-    csv=filtered_df_fn.to_csv(index = False).encode('utf-8')
-    st.download_button(label='Download Financial News', data= csv, file_name='Financial News.csv')
+    news_csv=filtered_df_fn.to_csv(index = False).encode('utf-8')
+    news_xlsx = to_excel(filtered_df_fn)
+    st.download_button(label=':material/download: CSV File', data= news_csv, file_name='Financial News.csv')
+    st.download_button(label=':material/download: Excel File', data= news_xlsx, file_name='Financial News.xlsx')
 
 
 #======================================================================================================================================== 

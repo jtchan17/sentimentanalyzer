@@ -2,21 +2,31 @@ import streamlit as st
 import pyrebase
 import json
 
+# config = {
+#   "apiKey": "AIzaSyAaRg0x_NjEc-xPfgXA0DW0wgmkzq8rIMw",
+#   "authDomain": "sentimentanalyzer-4bd42.firebaseapp.com",
+#   "projectId": "sentimentanalyzer-4bd42",
+#   "databaseURL": "https://sentimentanalyzer-4bd42-default-rtdb.asia-southeast1.firebasedatabase.app/",
+#   "storageBucket": "sentimentanalyzer-4bd42.firebasestorage.app",
+#   "messagingSenderId": "694050098907",
+#   "appId": "1:694050098907:web:a0f7e83f9e997350fdc6fe",
+#   "measurementId": "G-QJMP88TBJ1"
+# }
 config = {
-  "apiKey": "AIzaSyAaRg0x_NjEc-xPfgXA0DW0wgmkzq8rIMw",
-  "authDomain": "sentimentanalyzer-4bd42.firebaseapp.com",
-  "projectId": "sentimentanalyzer-4bd42",
-  "databaseURL": "https://sentimentanalyzer-4bd42-default-rtdb.asia-southeast1.firebasedatabase.app/",
-  "storageBucket": "sentimentanalyzer-4bd42.firebasestorage.app",
-  "messagingSenderId": "694050098907",
-  "appId": "1:694050098907:web:a0f7e83f9e997350fdc6fe",
-  "measurementId": "G-QJMP88TBJ1"
+    "apiKey": st.secrets["firebase"]["apiKey"],
+    "authDomain": st.secrets["firebase"]["authDomain"],
+    "projectId": st.secrets["firebase"]["projectId"],
+    "databaseURL": st.secrets["firebase"]["databaseURL"],
+    "storageBucket": st.secrets["firebase"]["storageBucket"],
+    "messagingSenderId": st.secrets["firebase"]["messagingSenderId"],
+    "appId": st.secrets["firebase"]["appId"],
+    "measurementId": st.secrets["firebase"]["measurementId"],
 }
+# fb_credentials = st.secrets["firebase"]['my_project_settings']
 firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
 db = firebase.database()
 user = auth.current_user
-st.write(user)
      
 st.header("Update Your Profile")
 st.write(f"Your username is :violet[{st.session_state.username}].")
