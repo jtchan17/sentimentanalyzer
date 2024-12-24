@@ -651,6 +651,7 @@ with fil_col4:
         file_name = os.path.join(IMG_FOLDER, f"{ name }.png")
         st.write(file_name)
         fig.write_image(file_name, engine="kaleido")
+        st.write('reached here')
         return file_name
     
     #save altair chart into png format
