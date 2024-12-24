@@ -663,7 +663,10 @@ with fil_col4:
         wordcloud.to_file(file_name)
         return file_name
     
+    #Saving graph and table to html
+    st.write('Saving graphs...')
     hsd_html = save_plotly_plot('historicalprice_line', chart_HistoricalStockData)
+    st.write('Saving historical price...')
     fnot_html = save_plotly_plot('news_line', chart_FrequencyofNewsOverTime)
     ssot_html = save_plotly_plot('sentiment_pie', chart_SentimentScoreOverTime)
     publisher = save_plotly_plot('publiser_bar', chart_Publishers)
@@ -677,9 +680,8 @@ with fil_col4:
 
     try:
         wkhtml_path = pdfkit.configuration(wkhtmltopdf = '/usr/bin/wkhtmltopdf')
-        
-        
-
+        import time
+        start_time = time.time()
         html = template.render(
             hsd_url = hsd_html,
             fnot_url = fnot_html,
@@ -696,19 +698,17 @@ with fil_col4:
         )
 
         pdf = pdfkit.from_string(html, configuration = wkhtml_path, options = {"enable-local-file-access": "", "zoom": "1.3"})
+    except(ValueError, TypeError):
+        export_button = st.button('Export⬇️')
+        print('Button with label only')
 
-        submit = st.download_button(
+    submit = st.download_button(
                 "Export⬇️",
                 data=pdf,
                 file_name="Stock Prices Report.pdf",
                 mime="application/pdf",
             )
 
-        if submit:
-            st.balloons()
-
-    except(ValueError, TypeError):
-        export_button = st.button('Export⬇️')
-        print('Button with label only')
-
+    if submit:
+        st.balloons()
 ##########################################################################################################################################
