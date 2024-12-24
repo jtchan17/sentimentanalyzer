@@ -20,7 +20,7 @@ from pyxlsb import open_workbook as open_xlsb
 PDF_TEMPLATE_FILE = 'PDFtemplate.html'
 IMG_FOLDER = os.path.join(os.getcwd(), 'tmp/image')
 WKHTMLTOPDF_PATH = os.path.join(os.getcwd(), 'wkhtmltopdf\\bin\\wkhtmltopdf.exe')
-print(WKHTMLTOPDF_PATH)
+os.makedirs(IMG_FOLDER, exist_ok=True)
 ##########################################################################################################################################
 alt.themes.enable("dark")
 
@@ -650,8 +650,12 @@ with fil_col4:
         st.write('Reached save_plotly_plot')
         file_name = os.path.join(IMG_FOLDER, f"{ name }.png")
         st.write(file_name)
-        fig.write_image(file_name, engine="kaleido")
-        st.write('reached here')
+        try:
+            fig.write_image(file_name, engine="kaleido")
+            st.write('reached here')
+        except Exception as e:
+            st.error(f"Error saving plotly plot: {e}")
+            st.stop()  # Stop execution if there's a critical error
         return file_name
     
     #save altair chart into png format
