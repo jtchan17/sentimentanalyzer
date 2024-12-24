@@ -647,7 +647,7 @@ with fil_col4:
     
     #save plotly_express chart into png format
     def save_plotly_plot(name, fig):
-
+        st.write('Reached save_plotly_plot')
         file_name = os.path.join(IMG_FOLDER, f"{ name }.png")
         st.write(file_name)
         fig.write_image(file_name, engine="kaleido")
@@ -667,8 +667,8 @@ with fil_col4:
     
     #Saving graph and table to html
     st.write('Saving graphs...')
-    # hsd_html = save_plotly_plot('historicalprice_line', chart_HistoricalStockData)
-    # st.write('Saving historical price...')
+    hsd_html = save_plotly_plot('historicalprice_line', chart_HistoricalStockData)
+    st.write('Saving historical price...')
     # fnot_html = save_plotly_plot('news_line', chart_FrequencyofNewsOverTime)
     # ssot_html = save_plotly_plot('sentiment_pie', chart_SentimentScoreOverTime)
     # publisher = save_plotly_plot('publiser_bar', chart_Publishers)
@@ -684,7 +684,7 @@ with fil_col4:
     import time
     start_time = time.time()
     html = template.render(
-        # hsd_url = hsd_html,
+        hsd_url = hsd_html,
         # fnot_url = fnot_html,
         # ssot_url = ssot_html,
         # sdbt_url = sdbt_html,
