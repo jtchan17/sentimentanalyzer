@@ -661,20 +661,15 @@ with fil_col4:
         return file_name
     
     def save_word_cloud(name, fig):
-        st.write('Reached save_word_cloud')
         file_name = os.path.join(IMG_FOLDER, f"{ name }.png")
-        st.write(file_name)
         # Save the image in the img folder:
         wordcloud.to_file(file_name)
-        st.write('reached here')
         return file_name
     
     #Saving graph and table to html
-    st.write('Saving graphs...')
     # hsd_html = save_plotly_plot('historicalprice_line', chart_HistoricalStockData)
-    # st.write('Saving historical price...')
     # fnot_html = save_plotly_plot('news_line', chart_FrequencyofNewsOverTime)
-    # ssot_html = save_plotly_plot('sentiment_pie', chart_SentimentScoreOverTime)
+    ssot_html = save_plotly_plot('sentiment_pie', chart_SentimentScoreOverTime)
     # publisher = save_plotly_plot('publiser_bar', chart_Publishers)
     # sdbt_html = save_plotly_plot('topics_bar', chart_TopicFrequency)
     wf_html = save_word_cloud('wordcloud', word_frequncy)
@@ -690,7 +685,7 @@ with fil_col4:
     html = template.render(
         # hsd_url = hsd_html,
         # fnot_url = fnot_html,
-        # ssot_url = ssot_html,
+        ssot_url = ssot_html,
         # sdbt_url = sdbt_html,
         wf_url = wf_html,
         # publishers_url = publisher,
