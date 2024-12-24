@@ -678,26 +678,28 @@ with fil_col4:
     ssac_table_html = getTableHTML(table_SentimentFrequency, True, 2)
     tp_table_html = getTableHTML(table_TopPublishers, False, 1)
 
+    wkhtml_path = pdfkit.configuration(wkhtmltopdf = '/usr/bin/wkhtmltopdf')
+    import time
+    start_time = time.time()
+    html = template.render(
+        hsd_url = hsd_html,
+        fnot_url = fnot_html,
+        ssot_url = ssot_html,
+        sdbt_url = sdbt_html,
+        wf_url = wf_html,
+        publishers_url = publisher,
+        hpay_table = hpay_table_html,
+        nnac_table = nnac_table_html,
+        ssac_table = ssac_table_html,
+        tp_table = tp_table_html,
+        selected_font = final_font_family,
+        selected_font_style = font_style_selection,
+    )
+    st.write(f"Template rendered in {time.time() - start_time:.2f} seconds.")
+    start_time = time.time()
     try:
-        wkhtml_path = pdfkit.configuration(wkhtmltopdf = '/usr/bin/wkhtmltopdf')
-        import time
-        start_time = time.time()
-        html = template.render(
-            hsd_url = hsd_html,
-            fnot_url = fnot_html,
-            ssot_url = ssot_html,
-            sdbt_url = sdbt_html,
-            wf_url = wf_html,
-            publishers_url = publisher,
-            hpay_table = hpay_table_html,
-            nnac_table = nnac_table_html,
-            ssac_table = ssac_table_html,
-            tp_table = tp_table_html,
-            selected_font = final_font_family,
-            selected_font_style = font_style_selection,
-        )
-
         pdf = pdfkit.from_string(html, configuration = wkhtml_path, options = {"enable-local-file-access": "", "zoom": "1.3"})
+        st.write(f"PDF generated in {time.time() - start_time:.2f} seconds.")
     except(ValueError, TypeError):
         export_button = st.button('Export⬇️')
         print('Button with label only')
