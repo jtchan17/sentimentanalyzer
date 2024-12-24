@@ -18,7 +18,7 @@ from pyxlsb import open_workbook as open_xlsb
 
 ##########################################################################################################################################
 PDF_TEMPLATE_FILE = 'PDFtemplate.html'
-IMG_FOLDER = os.path.join(os.getcwd(), 'image')
+IMG_FOLDER = os.path.join(os.getcwd(), 'tmp\\image')
 WKHTMLTOPDF_PATH = os.path.join(os.getcwd(), 'wkhtmltopdf\\bin\\wkhtmltopdf.exe')
 print(WKHTMLTOPDF_PATH)
 ##########################################################################################################################################
@@ -648,6 +648,7 @@ with fil_col4:
     #save plotly_express chart into png format
     def save_plotly_plot(name, fig):
         file_name = os.path.join(IMG_FOLDER, f"{ name }.png")
+        st.write(file_name)
         fig.write_image(file_name, engine="kaleido")
         return file_name
     
