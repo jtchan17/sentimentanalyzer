@@ -661,20 +661,23 @@ with fil_col4:
         return file_name
     
     def save_word_cloud(name, fig):
+        st.write('Reached save_word_cloud')
         file_name = os.path.join(IMG_FOLDER, f"{ name }.png")
+        st.write(file_name)
         # Save the image in the img folder:
         wordcloud.to_file(file_name)
+        st.write('reached here')
         return file_name
     
     #Saving graph and table to html
     st.write('Saving graphs...')
-    hsd_html = save_plotly_plot('historicalprice_line', chart_HistoricalStockData)
-    st.write('Saving historical price...')
+    # hsd_html = save_plotly_plot('historicalprice_line', chart_HistoricalStockData)
+    # st.write('Saving historical price...')
     # fnot_html = save_plotly_plot('news_line', chart_FrequencyofNewsOverTime)
     # ssot_html = save_plotly_plot('sentiment_pie', chart_SentimentScoreOverTime)
     # publisher = save_plotly_plot('publiser_bar', chart_Publishers)
     # sdbt_html = save_plotly_plot('topics_bar', chart_TopicFrequency)
-    # wf_html = save_word_cloud('wordcloud', word_frequncy)
+    wf_html = save_word_cloud('wordcloud', word_frequncy)
     # ssac_html = save_altair_plot('companies_sentiment_bar', chart_SentimentScoreAcrossCompanies)
     hpay_table_html = getTableHTML(table_HighestPriceAcrossYear, False, 1)
     nnac_table_html = getTableHTML(table_NumberofNewsAcrossCompanies, False, 1)
@@ -685,11 +688,11 @@ with fil_col4:
     import time
     start_time = time.time()
     html = template.render(
-        hsd_url = hsd_html,
+        # hsd_url = hsd_html,
         # fnot_url = fnot_html,
         # ssot_url = ssot_html,
         # sdbt_url = sdbt_html,
-        # wf_url = wf_html,
+        wf_url = wf_html,
         # publishers_url = publisher,
         hpay_table = hpay_table_html,
         nnac_table = nnac_table_html,
