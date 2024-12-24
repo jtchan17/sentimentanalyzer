@@ -18,7 +18,7 @@ from pyxlsb import open_workbook as open_xlsb
 
 ##########################################################################################################################################
 PDF_TEMPLATE_FILE = 'PDFtemplate.html'
-IMG_FOLDER = os.path.join(os.getcwd(), 'tmp\\image')
+IMG_FOLDER = os.path.join(os.getcwd(), 'tmp/image')
 WKHTMLTOPDF_PATH = os.path.join(os.getcwd(), 'wkhtmltopdf\\bin\\wkhtmltopdf.exe')
 print(WKHTMLTOPDF_PATH)
 ##########################################################################################################################################
