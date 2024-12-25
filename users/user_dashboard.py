@@ -641,11 +641,13 @@ with fil_col4:
     template = templateEnv.get_template(PDF_TEMPLATE_FILE)
 
     #save dataframe to html
+    @st.cache_data
     def getTableHTML(table, index, border):
         table_html = table.to_html(index=index, escape=False, border=border)
         return table_html
     
     #save plotly_express chart into png format
+    @st.cache_data
     def save_plotly_plot(name, fig):
         # st.write('Reached save_plotly_plot')
         file_name = os.path.join(IMG_FOLDER, f"{ name }.png")
@@ -659,11 +661,13 @@ with fil_col4:
         return file_name
     
     #save altair chart into png format
+    @st.cache_data
     def save_altair_plot(name, fig):
         file_name = os.path.join(IMG_FOLDER, f"{ name }.png")
         fig.save(file_name)
         return file_name
-    
+
+    @st.cache_data
     def save_word_cloud(name, fig):
         file_name = os.path.join(IMG_FOLDER, f"{ name }.png")
         # Save the image in the img folder:
@@ -684,8 +688,6 @@ with fil_col4:
     tp_table_html = getTableHTML(table_TopPublishers, False, 1)
 
     wkhtml_path = pdfkit.configuration(wkhtmltopdf = '/usr/bin/wkhtmltopdf')
-    import time
-    start_time = time.time()
     html = template.render(
         hsd_url = hsd_html,
         fnot_url = fnot_html,
