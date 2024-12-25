@@ -653,7 +653,7 @@ with fil_col4:
         file_name = os.path.join(IMG_FOLDER, f"{ name }.png")
         # st.write(file_name)
         try:
-            fig.write_image(file_name, engine="kaleido")
+            fig.write_image(file_name, engine="kaleido", scale=1)
             # st.write('reached here')
         except Exception as e:
             st.error(f"Error saving plotly plot: {e}")
