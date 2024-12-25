@@ -667,7 +667,6 @@ with fil_col4:
         fig.save(file_name)
         return file_name
 
-    @st.cache_data
     def save_word_cloud(name, fig):
         file_name = os.path.join(IMG_FOLDER, f"{ name }.png")
         # Save the image in the img folder:
