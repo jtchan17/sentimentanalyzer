@@ -700,11 +700,8 @@ with fil_col4:
         selected_font = final_font_family,
         selected_font_style = font_style_selection,
     )
-    st.write(f"Template rendered in {time.time() - start_time:.2f} seconds.")
-    start_time = time.time()
     try:
         pdf = pdfkit.from_string(html, configuration = wkhtml_path, options = {"enable-local-file-access": "", "zoom": "1.3"})
-        st.write(f"PDF generated in {time.time() - start_time:.2f} seconds.")
     except(ValueError, TypeError):
         export_button = st.button('Export⬇️')
         print('Button with label only')
