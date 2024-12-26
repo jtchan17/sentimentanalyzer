@@ -45,6 +45,9 @@ if "email" not in st.session_state:
 if "localID" not in st.session_state:
      st.session_state.localID = None
 
+if "user" not in st.session_state:
+     st.session_state.user = None
+
 ROLES = [None, "User", "Guest"]
 
 #Sign up dialog to create new user account
@@ -123,6 +126,7 @@ def home():
                 st.session_state.username = user_data
                 st.session_state.email = loginEmail
                 st.session_state.localID = user['localId']
+                st.session_state.user = user
                 st.rerun()
             except Exception as e:
                 st.error(f"Error: {json.loads(e.args[1])['error']['message']}")
@@ -140,12 +144,14 @@ def logout():
     st.session_state.username = None
     st.session_state.email = None
     st.session_state.localID = None
+    st.session_state.user = None
     st.rerun()
 
 role = st.session_state.role
 username = st.session_state.username
 email = st.session_state.email
 user = st.session_state.localID
+user = st.session_state.user
 
 logout_page = st.Page(logout, title="Log out", icon=":material/logout:")
 settings_page = st.Page("users/edit_profile.py", title="Edit Profile", icon=":material/edit:")
