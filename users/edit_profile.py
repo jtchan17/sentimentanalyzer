@@ -51,7 +51,7 @@ if editprofileButton:
         else:
             try:
                 st.write('reached here')
-                db.child(user[f'{st.session_state.localID}']).child("Username").set(newUsername)
+                db.child("users").child(st.session_state.localID).child("Username").set(newUsername)
                 st.write('cannot reach here')
                 st.session_state.username = newUsername
                 st.write('cannot reach here too')
