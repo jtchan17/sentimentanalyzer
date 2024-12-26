@@ -17,7 +17,7 @@ firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
 db = firebase.database()
 user = db.child("users").child(st.session_state.localID)
-st.write(user)
+
 
 @st.dialog('Forgot your password?')
 def resetPassword():
@@ -47,7 +47,7 @@ if editprofileButton:
                 st.warning("The new username is the same as the current username.")
             else:
                 try:
-                    db.child("users").child(st.session_state.localID).set(newUsername)
+                    db.child("users").child(st.session_state.localID).child("Username").set(newUsername)
                     st.session_state.username = newUsername
                     st.success(f"Username successfully updated to: {newUsername}")
                 except Exception as e:
