@@ -39,7 +39,8 @@ if editprofileButton:
     newUsername = st.text_input("Username", value=f"{st.session_state.username}")
 
     # Submit button 
-    submit_button = st.form_submit_button("Save Changes")
+    # submit_button = st.form_submit_button("Save Changes")
+    submit_button = st.button("Save Changes")
 
     if submit_button:
         st.write('reached here after submit button')
