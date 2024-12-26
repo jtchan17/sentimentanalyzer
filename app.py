@@ -117,7 +117,6 @@ def home():
                  # Fetch user details from Firestore
                 db.child(user['localId']).child("Username").get()
                 user_data = db.child(user['localId']).child("Username").get().val()
-                st.write(user_data)
                 st.session_state.role = role
                 st.session_state.username = user_data
                 st.session_state.email = loginEmail
