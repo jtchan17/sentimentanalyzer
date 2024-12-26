@@ -48,28 +48,23 @@ if st.session_state.edit_mode:
         # Submit button 
         submit_button = st.form_submit_button("Save Changes")
         # submit_button = st.button("Save Changes")
-        st.write('reached here before submit button')
         if submit_button:
             st.session_state.submit_clicked = True
 
         if st.session_state.submit_clicked:
-            st.write('reached here after submit button')
             if newUsername.strip() == "":
                 st.error("Username cannot be empty.")
                 st.session_state.submit_clicked = False
             elif newUsername == st.session_state.username:
-                st.warning("The new username is the same as the current username.")
                 st.session_state.submit_clicked = False
             else:
                 try:
-                    st.write('reached here')
                     db.child(st.session_state.localID).update({"Username": newUsername})
-                    st.write('cannot reach here')
                     st.session_state.username = newUsername
-                    st.write('cannot reach here too')
                     st.success(f"Username successfully updated to: {newUsername}")
                     st.session_state.submit_clicked = False
                     st.session_state.edit_mode = False
+                    st.rerun()
                 except Exception as e:
                     st.error(f"Error updating username: {str(e)}")
                     st.session_state.submit_clicked = False
