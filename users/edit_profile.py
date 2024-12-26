@@ -41,8 +41,8 @@ if editprofileButton:
     # Submit button 
     # submit_button = st.form_submit_button("Save Changes")
     submit_button = st.button("Save Changes")
-
-    if submit_button:
+    st.write('reached here before submit button')
+    if submit_button == True:
         st.write('reached here after submit button')
         if newUsername.strip() == "":
             st.error("Username cannot be empty.")
