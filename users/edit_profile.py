@@ -63,7 +63,7 @@ if st.session_state.edit_mode:
             else:
                 try:
                     st.write('reached here')
-                    db.child(st.session_state.localID).child("Username").update({"Username": newUsername})
+                    db.child(st.session_state.localID).update({"Username": newUsername})
                     st.write('cannot reach here')
                     st.session_state.username = newUsername
                     st.write('cannot reach here too')
