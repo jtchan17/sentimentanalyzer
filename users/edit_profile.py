@@ -2,16 +2,6 @@ import streamlit as st
 import pyrebase
 import json
 
-# config = {
-#   "apiKey": "AIzaSyAaRg0x_NjEc-xPfgXA0DW0wgmkzq8rIMw",
-#   "authDomain": "sentimentanalyzer-4bd42.firebaseapp.com",
-#   "projectId": "sentimentanalyzer-4bd42",
-#   "databaseURL": "https://sentimentanalyzer-4bd42-default-rtdb.asia-southeast1.firebasedatabase.app/",
-#   "storageBucket": "sentimentanalyzer-4bd42.firebasestorage.app",
-#   "messagingSenderId": "694050098907",
-#   "appId": "1:694050098907:web:a0f7e83f9e997350fdc6fe",
-#   "measurementId": "G-QJMP88TBJ1"
-# }
 config = {
     "apiKey": st.secrets["firebase"]["apiKey"],
     "authDomain": st.secrets["firebase"]["authDomain"],
@@ -27,10 +17,17 @@ firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
 db = firebase.database()
 user = auth.current_user
-     
+
+@st.dialog('Forgot your password?')
+def resetPassword():
+    # Send password reset email
+    auth.send_password_reset_email(f"{st.session_state.email}")
+    st.success("Password reset email sent! Check your inbox.")
+
 st.header("Update Your Profile")
 st.write(f"Your username is :violet[{st.session_state.username}].")
-editprofileButton = st.button('Edit Profile', key='editProfilebutton')
+editprofileButton = st.button('Edit Profile', key='editProfileButton')
+resetPasswordButton = st.button('Reset Password',key='resetPasswordButton', on_click=resetPassword)
 email = st.text_input("Email", value=f"{st.session_state.email}", disabled=True)
 
 if editprofileButton:
