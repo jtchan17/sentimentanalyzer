@@ -122,7 +122,7 @@ def home():
                 st.session_state.role = role
                 st.session_state.username = user_data
                 st.session_state.email = loginEmail
-                st.session_state.localID = user["localId"]
+                st.session_state.localID = db.child(user['localId']).get().val()
                 st.rerun()
             except Exception as e:
                 st.error(f"Error: {json.loads(e.args[1])['error']['message']}")
