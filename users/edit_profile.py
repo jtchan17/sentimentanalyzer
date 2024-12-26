@@ -17,6 +17,7 @@ firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
 db = firebase.database()
 user = auth.current_user
+st.write(user)
 
 @st.dialog('Forgot your password?')
 def resetPassword():
@@ -27,33 +28,21 @@ def resetPassword():
 st.header("Update Your Profile")
 st.write(f"Your username is :violet[{st.session_state.username}].")
 editprofileButton = st.button('Edit Profile', key='editProfileButton')
-resetPasswordButton = st.button('Reset Password',key='resetPasswordButton', on_click=resetPassword)
 email = st.text_input("Email", value=f"{st.session_state.email}", disabled=True)
+resetPasswordButton = st.button('Reset Password',key='resetPasswordButton', on_click=resetPassword)
 
 if editprofileButton:
     # Form for profile updates
     with st.form(key='profile_form'):
         # Username and Password change fields
-        username = st.text_input("Username", value=f"{st.session_state.username}")
-        new_password = st.text_input("New Password", type='password')
-        confirm_password = st.text_input("Confirm New Password", type='password')
+        newUsername = st.text_input("Username", value=f"{st.session_state.username}")
 
         # Submit button 
         submit_button = st.form_submit_button("Save Changes")
 
         if submit_button:
-            if username != st.session_state.username:
-                db.child(user['localId']).child("Username").set(username)
-                st.session_state.username = username
-            elif new_password and confirm_password:
-                if new_password == confirm_password:
-                    try:
-                        # Send password reset email
-                        auth.send_password_reset_email(email)
-                        st.success("Password reset email sent! Check your inbox.")
-                    except Exception as e:
-                        st.error(f"Error: {json.loads(e.args[1])['error']['message']}")
-                else:
-                    st.error('Passwords do not match!')
+            if (newUsername != st.session_state.username) and (newUsername != ''):
+                db.child(user['localId']).child("Username").set(newUsername)
+                st.session_state.username = newUsername
             else:
-                st.warning("Please provide a valid username and password.")
+                st.warning("Please provide a valid username.")
