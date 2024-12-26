@@ -16,7 +16,7 @@ config = {
 firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
 db = firebase.database()
-user = auth.current_user
+user = db.child("users").child(st.session_state.localID)
 st.write(user)
 
 @st.dialog('Forgot your password?')
@@ -41,8 +41,14 @@ if editprofileButton:
         submit_button = st.form_submit_button("Save Changes")
 
         if submit_button:
-            if (newUsername != st.session_state.username) and (newUsername != ''):
-                db.child(user['localId']).child("Username").set(newUsername)
-                st.session_state.username = newUsername
+            if newUsername.strip() == "":
+                st.error("Username cannot be empty.")
+            elif newUsername == st.session_state.username:
+                st.warning("The new username is the same as the current username.")
             else:
-                st.warning("Please provide a valid username.")
+                try:
+                    db.child("users").child(st.session_state.localID).set(newUsername)
+                    st.session_state.username = newUsername
+                    st.success(f"Username successfully updated to: {newUsername}")
+                except Exception as e:
+                    st.error(f"Error updating username: {str(e)}")

@@ -42,6 +42,9 @@ if "username" not in st.session_state:
 if "email" not in st.session_state:
      st.session_state.email = None
 
+if "localID" not in st.session_state:
+     st.session_state.localID = None
+
 ROLES = [None, "User", "Guest"]
 
 #Sign up dialog to create new user account
@@ -115,11 +118,11 @@ def home():
             try:
                 user = auth.sign_in_with_email_and_password(email=loginEmail, password=loginPassword)
                  # Fetch user details from Firestore
-                db.child(user['localId']).child("Username").get()
-                user_data = db.child(user['localId']).child("Username").get().val()
+                user_data = db.child(user['localId']).child("Username").get().val() 
                 st.session_state.role = role
                 st.session_state.username = user_data
                 st.session_state.email = loginEmail
+                st.session_state.localID = user["localId"]
                 st.rerun()
             except Exception as e:
                 st.error(f"Error: {json.loads(e.args[1])['error']['message']}")
@@ -129,17 +132,20 @@ def home():
             st.session_state.role = role
             st.session_state.username = None
             st.session_state.email = None
+            st.session_state.localID = None
             st.rerun()
 
 def logout():
     st.session_state.role = None
     st.session_state.username = None
     st.session_state.email = None
+    st.session_state.localID = None
     st.rerun()
 
 role = st.session_state.role
 username = st.session_state.username
 email = st.session_state.email
+user = st.session_state.localID
 
 logout_page = st.Page(logout, title="Log out", icon=":material/logout:")
 settings_page = st.Page("users/edit_profile.py", title="Edit Profile", icon=":material/edit:")
