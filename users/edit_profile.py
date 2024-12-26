@@ -18,7 +18,7 @@ auth = firebase.auth()
 db = firebase.database()
 st.write(st.session_state.localID)
 user = db.child("users").child(st.session_state.localID)
-
+st.write(user)
 
 @st.dialog('Forgot your password?')
 def resetPassword():
