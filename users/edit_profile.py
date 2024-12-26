@@ -48,7 +48,7 @@ if editprofileButton:
                 st.warning("The new username is the same as the current username.")
             else:
                 try:
-                    db.child("users").child(st.session_state.localID).child("Username").set(newUsername)
+                    db.child(user[f'{st.session_state.localID}']).child("Username").set(newUsername)
                     st.session_state.username = newUsername
                     st.success(f"Username successfully updated to: {newUsername}")
                 except Exception as e:
