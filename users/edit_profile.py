@@ -1,6 +1,6 @@
 import streamlit as st
 import pyrebase
-import json
+import time
 
 config = {
     "apiKey": st.secrets["firebase"]["apiKey"],
@@ -47,7 +47,7 @@ if st.session_state.edit_mode:
             
         # Submit button 
         submit_button = st.form_submit_button("Save Changes")
-        # submit_button = st.button("Save Changes")
+
         if submit_button:
             st.session_state.submit_clicked = True
 
@@ -64,6 +64,7 @@ if st.session_state.edit_mode:
                     st.success(f"Username successfully updated to: {newUsername}")
                     st.session_state.submit_clicked = False
                     st.session_state.edit_mode = False
+                    time.sleep(5)
                     st.rerun()
                 except Exception as e:
                     st.error(f"Error updating username: {str(e)}")
