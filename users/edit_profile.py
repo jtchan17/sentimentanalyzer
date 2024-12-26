@@ -16,9 +16,9 @@ config = {
 firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
 db = firebase.database()
-st.write(st.session_state.localID)
-st.write(st.session_state.user)
-user = st.session_state.user
+
+if "edit_mode" not in st.session_state:
+    st.session_state.edit_mode = False
 
 @st.dialog('Forgot your password?')
 def resetPassword():
@@ -33,28 +33,43 @@ email = st.text_input("Email", value=f"{st.session_state.email}", disabled=True)
 resetPasswordButton = st.button('Reset Password',key='resetPasswordButton', on_click=resetPassword)
 
 if editprofileButton:
-    # Form for profile updates
-    # with st.form(key='profile_form'):
-    # Username and Password change fields
-    newUsername = st.text_input("Username", value=f"{st.session_state.username}")
+    st.session_state.edit_mode = True
 
-    # Submit button 
-    # submit_button = st.form_submit_button("Save Changes")
-    submit_button = st.button("Save Changes")
-    st.write('reached here before submit button')
-    if submit_button == True:
-        st.write('reached here after submit button')
-        if newUsername.strip() == "":
-            st.error("Username cannot be empty.")
-        elif newUsername == st.session_state.username:
-            st.warning("The new username is the same as the current username.")
-        else:
-            try:
-                st.write('reached here')
-                db.child("users").child(st.session_state.localID).child("Username").set(newUsername)
-                st.write('cannot reach here')
-                st.session_state.username = newUsername
-                st.write('cannot reach here too')
-                st.success(f"Username successfully updated to: {newUsername}")
-            except Exception as e:
-                st.error(f"Error updating username: {str(e)}")
+if st.session_state.edit_mode:
+    # Form for profile updates
+    with st.form(key='profile_form'):
+        # Username and Password change fields
+        newUsername = st.text_input("Username", value=f"{st.session_state.username}")
+
+        # Submit button with session state tracking
+        if "submit_clicked" not in st.session_state:
+            st.session_state.submit_clicked = False
+            
+        # Submit button 
+        submit_button = st.form_submit_button("Save Changes")
+        # submit_button = st.button("Save Changes")
+        st.write('reached here before submit button')
+        if submit_button:
+            st.session_state.submit_clicked = True
+
+        if st.session_state.submit_clicked:
+            st.write('reached here after submit button')
+            if newUsername.strip() == "":
+                st.error("Username cannot be empty.")
+                st.session_state.submit_clicked = False
+            elif newUsername == st.session_state.username:
+                st.warning("The new username is the same as the current username.")
+                st.session_state.submit_clicked = False
+            else:
+                try:
+                    st.write('reached here')
+                    db.child("users").child(st.session_state.localID).child("Username").set(newUsername)
+                    st.write('cannot reach here')
+                    st.session_state.username = newUsername
+                    st.write('cannot reach here too')
+                    st.success(f"Username successfully updated to: {newUsername}")
+                    st.session_state.submit_clicked = False
+                    st.session_state.edit_mode = False
+                except Exception as e:
+                    st.error(f"Error updating username: {str(e)}")
+                    st.session_state.submit_clicked = False
