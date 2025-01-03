@@ -76,7 +76,7 @@ def signup():
                 st.success("You have successfully created a valid Account")
                 st.info('Please proceed to login using email and password.')
             except Exception as e:
-                    st.error("Error!")
+                    st.error(f"Error: {json.loads(e.args[1])['error']['message']}")
 
 #A dialog for user who forgot the password
 @st.dialog('Forgot your password?')
