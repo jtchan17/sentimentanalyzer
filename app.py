@@ -183,7 +183,7 @@ guest = st.Page(
 )
 
 account_pages = [logout_page]
-users_pages = [user, user_SA, settings_page]
+users_pages = [user, user_SA, settings_page, user_analysis]
 guest_pages = [guest]
 
 # st.title("Request manager")
