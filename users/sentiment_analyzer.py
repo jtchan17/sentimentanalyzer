@@ -11,7 +11,7 @@ url = 'https://drive.google.com/drive/folders/175Skml7CqvbfgS14oOctFzx-7go72jak?
 if not os.path.exists(model_dir):
     gdown.download_folder(url)
 
-st.title('📈 Sentiment Analyzer')
+st.title('🤖 Sentiment Analyzer')
 
 #Sentiment Analyzer
 st.subheader('Sentiment Analyzer')

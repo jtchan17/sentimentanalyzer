@@ -262,7 +262,7 @@ with fil_col1:
     select_year = popover.radio(label='Select Year',options=years, key='select_year', label_visibility="collapsed")
 
 with fil_col2:
-    popover = st.popover("Company")
+    popover = st.popover("Ticker")
     aapl = popover.checkbox('AAPL', key='aapl', value=True)
     amzn = popover.checkbox('AMZN', key='amzn', value=True)
     meta = popover.checkbox('META', key='meta', value=True)
