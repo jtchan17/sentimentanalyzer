@@ -87,7 +87,7 @@ with st.sidebar:
     font_style_selection = st.selectbox('Style', font_style, index=0)
     #------------------------------------------------------------------------
     #Companies Colour
-    st.subheader('Companies', divider=True)
+    st.subheader('Tickers', divider=True)
     companies_default_colors = {
         'AAPL': 'Blue',
         'AMZN': 'Orange',
