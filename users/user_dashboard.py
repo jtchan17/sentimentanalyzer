@@ -268,8 +268,8 @@ with fil_col2:
     tsla = popover.checkbox('TSLA', key='tsla', value=True)
     companies = {'AAPL': aapl, 'AMZN': amzn, 'META': meta, 'MSFT': msft, 'TSLA': tsla}
 
-    if 'aapl' not in st.session_state:
-        st.session_state['aapl'] = False
+    if 'aapll' not in st.session_state:
+        st.session_state['aapll'] = False
     if 'amzn' not in st.session_state:
         st.session_state['amzn'] = False
     if 'meta' not in st.session_state:
@@ -283,7 +283,7 @@ with fil_col2:
 
 with fil_col3:
     def clear_filters():
-        st.session_state['aapl'] = True
+        st.session_state['aapll'] = True
         st.session_state['amzn'] = True
         st.session_state['meta'] = True
         st.session_state['msft'] = True

@@ -56,6 +56,7 @@ if st.session_state.edit_mode:
                 st.error("Username cannot be empty.")
                 st.session_state.submit_clicked = False
             elif newUsername == st.session_state.username:
+                st.error("New username cannot be same as old username.")
                 st.session_state.submit_clicked = False
             else:
                 try:
