@@ -26,7 +26,7 @@ def resetPassword():
     auth.send_password_reset_email(f"{st.session_state.email}")
     st.success("Password reset email sent! Check your inbox.")
 
-st.header("Update Your Profile")
+st.header("⚙️ Update Your Profile")
 st.write(f"Your username is :violet[{st.session_state.username}].")
 editprofileButton = st.button('Edit Profile', key='editProfileButton')
 email = st.text_input("Email", value=f"{st.session_state.email}", disabled=True)
@@ -64,7 +64,7 @@ if st.session_state.edit_mode:
                     st.success(f"Username successfully updated to: {newUsername}")
                     st.session_state.submit_clicked = False
                     st.session_state.edit_mode = False
-                    time.sleep(5)
+                    time.sleep(2)
                     st.rerun()
                 except Exception as e:
                     st.error(f"Error updating username: {str(e)}")

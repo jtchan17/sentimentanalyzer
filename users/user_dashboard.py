@@ -76,9 +76,7 @@ with st.sidebar:
         'Sans-serif': 'sans-serif',
         'Serif': 'serif',
         'Monospace': 'monospace',
-        'Arial': 'arial',
         'Lucida Console': 'Lucida Console',
-        'Times New Roman': 'Times New Roman',
         'Courier New': 'Courier New'
     }
     font_style = ['normal', 'italic']
