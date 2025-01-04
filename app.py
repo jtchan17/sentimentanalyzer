@@ -98,46 +98,48 @@ def forgotPassword():
 def home():
     st.title('🎉 Welcome to :blue[Sentiment Analyzer Dashboard]')
     st.divider()
-    role = st.selectbox("Choose your role", ROLES)
-    if role == "User":
-        st.subheader("Log in", divider=True)
-        loginEmail = st.text_input("Email", key='loginEmail')
-        # loginUsername = st.text_input("Username", key='loginUsername')
-        loginPassword = st.text_input("Password", key='loginPassword', type='password')
+    chooseRole, abtUs = st.columns([2,3])
+    with chooseRole:
+        role = st.selectbox("Choose your role", ROLES)
+        if role == "User":
+            st.subheader("Log in", divider=True)
+            loginEmail = st.text_input("Email", key='loginEmail')
+            # loginUsername = st.text_input("Username", key='loginUsername')
+            loginPassword = st.text_input("Password", key='loginPassword', type='password')
 
-        col1, col2 = st.columns([3.5, 1])
-        with col1:
-            login_Button = st.button("Login")
-        with col2:
-            st.button('Forgot Password', on_click=forgotPassword)
+            col1, col2 = st.columns([3.5, 1])
+            with col1:
+                login_Button = st.button("Login")
+            with col2:
+                st.button('Forgot Password', on_click=forgotPassword)
 
-        st.write('')
+            st.write('')
 
-        col3, col4, col5 = st.columns(3)
-        with col4:
-            st.button('New User? Click here.', on_click=signup)
+            col3, col4, col5 = st.columns(3)
+            with col4:
+                st.button('New User? Click here.', on_click=signup)
 
-        if login_Button:
-            try:
-                user = auth.sign_in_with_email_and_password(email=loginEmail, password=loginPassword)
-                 # Fetch user details from Firestore
-                user_data = db.child(user['localId']).child("Username").get().val() 
+            if login_Button:
+                try:
+                    user = auth.sign_in_with_email_and_password(email=loginEmail, password=loginPassword)
+                    # Fetch user details from Firestore
+                    user_data = db.child(user['localId']).child("Username").get().val() 
+                    st.session_state.role = role
+                    st.session_state.username = user_data
+                    st.session_state.email = loginEmail
+                    st.session_state.localID = user['localId']
+                    st.session_state.user = user
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Error: {json.loads(e.args[1])['error']['message']}")
+                    st.warning('Incorrect Username/Password.')
+        elif role == "Guest":
+            if st.button("Log in"):
                 st.session_state.role = role
-                st.session_state.username = user_data
-                st.session_state.email = loginEmail
-                st.session_state.localID = user['localId']
-                st.session_state.user = user
+                st.session_state.username = None
+                st.session_state.email = None
+                st.session_state.localID = None
                 st.rerun()
-            except Exception as e:
-                st.error(f"Error: {json.loads(e.args[1])['error']['message']}")
-                st.warning('Incorrect Username/Password.')
-    elif role == "Guest":
-        if st.button("Log in"):
-            st.session_state.role = role
-            st.session_state.username = None
-            st.session_state.email = None
-            st.session_state.localID = None
-            st.rerun()
 
 def logout():
     st.session_state.role = None
