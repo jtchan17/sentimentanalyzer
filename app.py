@@ -56,8 +56,8 @@ def signup():
 
     new_email = st.text_input("Email", key="signupEmail")
     new_username = st.text_input("Username", key='signupUsername')
-    new_password = st.text_input("Password", key='signupPassword', type='password')
-    new_confirm_password = st.text_input("Confirm Password", key='signupConfirmPassword', type='password')
+    new_password = st.text_input("Password (Please include a uppercase, lowercase, numeric and non-alphanumeric characters)", key='signupPassword', type='password')
+    new_confirm_password = st.text_input("Confirm Password (Please include a uppercase, lowercase, numeric and non-alphanumeric characters)", key='signupConfirmPassword', type='password')
 
     signupButton = st.button("Sign up")
 

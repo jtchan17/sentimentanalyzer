@@ -20,7 +20,7 @@ db = firebase.database()
 if "edit_mode" not in st.session_state:
     st.session_state.edit_mode = False
 
-@st.dialog('Forgot your password?')
+@st.dialog('Reset password')
 def resetPassword():
     # Send password reset email
     auth.send_password_reset_email(f"{st.session_state.email}")
