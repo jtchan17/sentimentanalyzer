@@ -179,20 +179,26 @@ settings_page = st.Page("users/edit_profile.py", title="Edit Profile", icon=":ma
 user= st.Page(
     "users/user_dashboard.py",
     title="Dashboard",
-    icon=":material/home:",
+    icon=":material/dashboard:",
     default=(role == "User"),
 )
 
 user_SA = st.Page(
      "users/sentiment_analyzer.py",
      title="Sentiment Analyzer",
-     icon= ':material/analytics:',
+     icon= ':material/InsertEmoticon:',
 )
 
 user_analysis = st.Page(
     "users/analysis.py",
     title="Analysis",
     icon= ':material/analytics:',
+)
+
+user_help = st.Page(
+    "users/help.py",
+    title="Help Centre",
+    icon=':material/HelpCenterOutlined:'
 )
 
 guest = st.Page(
@@ -203,7 +209,7 @@ guest = st.Page(
 )
 
 account_pages = [logout_page]
-users_pages = [user, user_SA, user_analysis, settings_page]
+users_pages = [user, user_SA, user_analysis, settings_page, user_help]
 guest_pages = [guest]
 
 # st.title("Request manager")
