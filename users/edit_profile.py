@@ -84,6 +84,7 @@ if st.session_state.edit_mode:
                     st.error(f"Error updating username: {str(e)}")
                     st.session_state.submit_clicked = False
         elif st.session_state.cancel_clicked == True:
+            st.session_state.cancel_clicked = False
             st.session_state.edit_mode = False
             time.sleep(2)
             st.rerun()
