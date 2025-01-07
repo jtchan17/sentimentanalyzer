@@ -198,7 +198,7 @@ user_analysis = st.Page(
 user_help = st.Page(
     "users/help.py",
     title="Help Centre",
-    icon=':material/help_center_outlined:'
+    icon=':material/help:'
 )
 
 guest = st.Page(
