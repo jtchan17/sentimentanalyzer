@@ -83,3 +83,5 @@ if st.session_state.edit_mode:
                     st.session_state.submit_clicked = False
         elif st.session_state.cancel_clicked:
             st.session_state.edit_mode = False
+            time.sleep(2)
+            st.rerun()
