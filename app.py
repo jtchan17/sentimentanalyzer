@@ -145,8 +145,8 @@ def home():
 
     with abtUs:
         st.subheader('💡About Finalyze💡')
-        st.write('- Finalyze is  website that analyze stock prices and financial news using sentiment analysis tool.')
-        st.markdown('- **Sentiment analysis** is the process of classifying whether a block of text is :red[positive], :green[negative], or :blue[neutral].')
+        st.write('- Finalyze is  website that analyze stock prices and online news using sentiment analysis tool.')
+        st.markdown('- **:rainbow[Sentiment analysis]** is the process of classifying whether a block of text is :red[positive], :green[negative], or :blue[neutral].')
         st.markdown("<p style='text-align:center'><b>How to choose your role?</b></p>", unsafe_allow_html=True)
         dataframe = pd.DataFrame({
             "Functionalities": ["Data Visualization", "Customize & Filter Data", "Report Generator", "Profile Editing", "Sentiment Analysis", "Data Insights"],
