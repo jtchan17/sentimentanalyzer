@@ -74,7 +74,6 @@ def classify_sentiment(text):
 #     sentiment = {0: 'Neutral', 1: 'Negative', 2: 'Positive'}
 #     return sentiment[predicted_class]
 
-predicted_sentiment_label = classify_sentiment(headline_input)
 # label_map = {0: "Negative", 1: "Neutral", 2: "Positive"}
 # predicted_sentiment = [label_map[label.item()] for label in predicted_sentiment_label]
 # print(f"Predicted Sentiment: {predicted_sentiment}")
@@ -86,6 +85,7 @@ predicted_sentiment_label = classify_sentiment(headline_input)
 # # Get the prediction
 # logits = outputs.logits
 # prediction = torch.argmax(logits, dim=1).item()
+predicted_sentiment_label = classify_sentiment(headline_input)
 sentiments = {0: 'Neutral', 1: 'Negative', 2: 'Positive'}
 
 #------------------------------------------------------------------------------------------------------------------------------

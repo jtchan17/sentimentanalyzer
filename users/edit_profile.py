@@ -36,20 +36,31 @@ if editprofileButton:
     st.session_state.edit_mode = True
 
 if st.session_state.edit_mode:
-    # Form for profile updates
-    with st.form(key='profile_form'):
+    # Container for profile updates
+    with st.container():
         # Username and Password change fields
         newUsername = st.text_input("Username", value=f"{st.session_state.username}")
 
         # Submit button with session state tracking
         if "submit_clicked" not in st.session_state:
             st.session_state.submit_clicked = False
-            
+        
+        if "cancel_clicked" not in st.session_state:
+            st.session_state.cancel_clciked = False
+
         # Submit button 
-        submit_button = st.form_submit_button("Save Changes")
+        col1, col2 = st.columns(2)
+        with col1:
+            submit_button = st.button("Save Changes")
+
+        with col2:
+            cancel_button = st.button("Cancel")
 
         if submit_button:
             st.session_state.submit_clicked = True
+        
+        if cancel_button:
+            st.session_state.cancel_clicked = True
 
         if st.session_state.submit_clicked:
             if newUsername.strip() == "":
@@ -70,3 +81,5 @@ if st.session_state.edit_mode:
                 except Exception as e:
                     st.error(f"Error updating username: {str(e)}")
                     st.session_state.submit_clicked = False
+        elif st.session_state.cancel_clicked:
+            st.session_state.submit_clicked = False
