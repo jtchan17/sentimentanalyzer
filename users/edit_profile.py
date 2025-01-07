@@ -37,7 +37,7 @@ if editprofileButton:
 
 if st.session_state.edit_mode:
     # Container for profile updates
-    with st.container():
+    with st.container(border=True):
         # Username and Password change fields
         newUsername = st.text_input("Username", value=f"{st.session_state.username}")
 
