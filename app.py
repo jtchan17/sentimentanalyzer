@@ -186,7 +186,7 @@ user= st.Page(
 user_SA = st.Page(
      "users/sentiment_analyzer.py",
      title="Sentiment Analyzer",
-     icon= ':material/InsertEmoticon:',
+     icon= ':material/insert_emoticon:',
 )
 
 user_analysis = st.Page(
@@ -198,7 +198,7 @@ user_analysis = st.Page(
 user_help = st.Page(
     "users/help.py",
     title="Help Centre",
-    icon=':material/HelpCenterOutlined:'
+    icon=':material/help_center_outlined:'
 )
 
 guest = st.Page(
