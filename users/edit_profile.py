@@ -32,8 +32,6 @@ editprofileButton = st.button('Edit Profile', key='editProfileButton')
 email = st.text_input("Email", value=f"{st.session_state.email}", disabled=True)
 resetPasswordButton = st.button('Reset Password',key='resetPasswordButton', on_click=resetPassword)
 
-st.write(st.session_state.submit_clicked)
-st.write(st.session_state.cancel_clicked)
 if editprofileButton:
     st.session_state.edit_mode = True
 
@@ -86,5 +84,4 @@ if st.session_state.edit_mode:
         elif st.session_state.cancel_clicked == True:
             st.session_state.cancel_clicked = False
             st.session_state.edit_mode = False
-            time.sleep(2)
             st.rerun()
