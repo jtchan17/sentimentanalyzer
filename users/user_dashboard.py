@@ -262,22 +262,22 @@ with fil_col1:
 with fil_col2:
     popover = st.popover("Ticker")
     aapl = popover.checkbox('AAPL', key='aapll', value=True)
-    amzn = popover.checkbox('AMZN', key='amznn', value=True)
-    meta = popover.checkbox('META', key='metaa', value=True)
-    msft = popover.checkbox('MSFT', key='msftt', value=True)
-    tsla = popover.checkbox('TSLA', key='tslaa', value=True)
+    amzn = popover.checkbox('AMZN', key='amzn', value=True)
+    meta = popover.checkbox('META', key='meta', value=True)
+    msft = popover.checkbox('MSFT', key='msft', value=True)
+    tsla = popover.checkbox('TSLA', key='tsla', value=True)
     companies = {'AAPL': aapl, 'AMZN': amzn, 'META': meta, 'MSFT': msft, 'TSLA': tsla}
 
     if 'aapll' not in st.session_state:
         st.session_state['aapll'] = False
-    if 'amznn' not in st.session_state:
-        st.session_state['amznn'] = False
-    if 'metaa' not in st.session_state:
-        st.session_state['metaa'] = False
-    if 'msftt' not in st.session_state:
-        st.session_state['msftt'] = False
-    if 'tslaa' not in st.session_state:
-        st.session_state['tslaa'] = False
+    if 'amzn' not in st.session_state:
+        st.session_state['amzn'] = False
+    if 'meta' not in st.session_state:
+        st.session_state['meta'] = False
+    if 'msft' not in st.session_state:
+        st.session_state['msft'] = False
+    if 'tsla' not in st.session_state:
+        st.session_state['tsla'] = False
     if 'select_year' not in st.session_state:
         st.session_state['select_year'] = 'All'
 
