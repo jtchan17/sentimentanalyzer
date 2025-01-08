@@ -270,13 +270,13 @@ with fil_col2:
 
     if 'aapll' not in st.session_state:
         st.session_state['aapll'] = False
-    if 'amzn' not in st.session_state:
+    if 'amznn' not in st.session_state:
         st.session_state['amznn'] = False
-    if 'meta' not in st.session_state:
+    if 'metaa' not in st.session_state:
         st.session_state['metaa'] = False
-    if 'msft' not in st.session_state:
+    if 'msftt' not in st.session_state:
         st.session_state['msftt'] = False
-    if 'tsla' not in st.session_state:
+    if 'tslaa' not in st.session_state:
         st.session_state['tslaa'] = False
     if 'select_year' not in st.session_state:
         st.session_state['select_year'] = 'All'
