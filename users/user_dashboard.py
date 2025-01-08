@@ -527,7 +527,7 @@ with r3c1:
     table_SentimentFrequency = grouped_sentiment_df_fn.reset_index()
     grouped_sentiment_df_fn.rename(columns={'company': 'Companies', 'negative': 'Negative', 'neutral': 'Neutral', 'positive': 'Positive'}, inplace=True)
     table_SentimentFrequency = grouped_sentiment_df_fn
-    chart_SentimentFrequency = px.scatter(df_fn1, x='Company', y='sentiment_score', size='sentiment_score', color='company',
+    chart_SentimentFrequency = px.scatter(df_fn1, x='company', y='sentiment_score', size='sentiment_score', color='company',
                                           color_discrete_map={'AAPL': final_aapl_colour,
                                                                 'AMZN': final_amzn_colour,
                                                                 'TSLA': final_tsla_colour,
