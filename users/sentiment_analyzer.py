@@ -96,7 +96,7 @@ def classify_sentiment(text):
 # logits = outputs.logits
 # prediction = torch.argmax(logits, dim=1).item()
 predicted_sentiment_label = classify_sentiment(headline_input)
-sentiments = {0: 'Neutral', 1: 'Negative', 2: 'Positive'}
+sentiments = {0: 'Neutral', 2: 'Negative', 1: 'Positive'}
 
 #------------------------------------------------------------------------------------------------------------------------------
 companies = ['aapl', 'meta', 'msft', 'amzn', 'tsla']
