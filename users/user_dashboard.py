@@ -136,7 +136,7 @@ with st.sidebar:
 st.markdown(
     f"""
     <p style="font-family: {final_font_family}; font-size: 40px; font-style: {font_style_selection}; font-weight: bold;">
-    📈 Dashboard of Stock Prices and Financial News
+    📈 Dashboard of Stock Prices and Online News
     </p>
     """,
     unsafe_allow_html=True,
@@ -527,7 +527,16 @@ with r3c1:
     table_SentimentFrequency = grouped_sentiment_df_fn.reset_index()
     grouped_sentiment_df_fn.rename(columns={'company': 'Companies', 'negative': 'Negative', 'neutral': 'Neutral', 'positive': 'Positive'}, inplace=True)
     table_SentimentFrequency = grouped_sentiment_df_fn
+    chart_SentimentFrequency = px.scatter(df_fn1, x='Company', y='sentiment_score', size='sentiment_score', color='company',
+                                          color_discrete_map={'AAPL': final_aapl_colour,
+                                                                'AMZN': final_amzn_colour,
+                                                                'TSLA': final_tsla_colour,
+                                                                'MSFT': final_msft_colour,
+                                                                'META': final_meta_colour
+                                          })
     st.table(table_SentimentFrequency)
+    st.plotly_chart(chart_SentimentFrequency)
+    
 
 with r3c2:
     # st.subheader(f'{final_font_colour}[Sentiment Score Across Companies]')
