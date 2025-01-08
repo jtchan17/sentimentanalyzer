@@ -419,12 +419,19 @@ with r2c2:
     df_article_freq = filtered_df_fn.groupby(['published date', 'company']).size().unstack(fill_value=0)
     df_article_freq = df_article_freq.reset_index()
     df_melted = pd.melt(df_article_freq, id_vars='published date', var_name='company', value_name='frequency')
-    chart_FrequencyofNewsOverTime = px.line(df_melted, x='published date', y="frequency", template='gridon', color='company',
-                                            color_discrete_map={'AAPL': final_aapl_colour,
+    # chart_FrequencyofNewsOverTime = px.line(df_melted, x='published date', y="frequency", template='gridon', color='company',
+                                            # color_discrete_map={'AAPL': final_aapl_colour,
+                                            #                     'AMZN': final_amzn_colour,
+                                            #                     'TSLA': final_tsla_colour,
+                                            #                     'MSFT': final_msft_colour,
+                                            #                     'META': final_meta_colour})
+    chart_FrequencyofNewsOverTime = px.scatter(df_melted, x='published date', y='frequency', color='company', 
+                                               color_discrete_map={'AAPL': final_aapl_colour,
                                                                 'AMZN': final_amzn_colour,
                                                                 'TSLA': final_tsla_colour,
                                                                 'MSFT': final_msft_colour,
-                                                                'META': final_meta_colour})
+                                                                'META': final_meta_colour       
+                                               })
     chart_update_layout(chart_FrequencyofNewsOverTime)
     st.plotly_chart(chart_FrequencyofNewsOverTime,use_container_width=True)
 #======================================================================================================================================== 
