@@ -522,19 +522,30 @@ with r3c1:
     st.plotly_chart(chart_SentimentScoreOverTime, use_container_width=True)
 
     #Sentiments Score Across Companies
+    st.markdown(
+        f"""
+        <p style="font-family: {final_font_family}; font-size: 24px; font-style: {font_style_selection}; font-weight: bold;">
+            Sentiment Score Across Companies
+        </p>
+        """,
+        unsafe_allow_html=True,
+    )
     df_fn1 = filter_sentiment(filtered_df_fn)
-    grouped_sentiment_df_fn = df_fn1.groupby(['company', 'sentiment_score']).size().unstack(fill_value=0)
-    table_SentimentFrequency = grouped_sentiment_df_fn.reset_index()
+    # grouped_sentiment_df_fn = df_fn1.groupby(['company', 'sentiment_score']).size().unstack(fill_value=0)
+    # table_SentimentFrequency = grouped_sentiment_df_fn.reset_index()
+    # grouped_sentiment_df_fn.rename(columns={'company': 'Companies', 'negative': 'Negative', 'neutral': 'Neutral', 'positive': 'Positive'}, inplace=True)
+    # table_SentimentFrequency = grouped_sentiment_df_fn
+    grouped_sentiment_df_fn = df_fn1.groupby(['company', 'sentiment_score']).size().reset_index(name='Total Article')
+    # grouped_sentiment_df_fn.columns = ['Negative', 'Neutral', 'Positive']
     grouped_sentiment_df_fn.rename(columns={'company': 'Companies', 'negative': 'Negative', 'neutral': 'Neutral', 'positive': 'Positive'}, inplace=True)
-    table_SentimentFrequency = grouped_sentiment_df_fn
-    chart_SentimentFrequency = px.scatter(df_fn1, x='company', y='sentiment_score', size='sentiment_score', color='company',
+    chart_SentimentFrequency = px.scatter(grouped_sentiment_df_fn, x='Companies', y='sentiment_score', size='Total Article', color='Companies',
                                           color_discrete_map={'AAPL': final_aapl_colour,
                                                                 'AMZN': final_amzn_colour,
                                                                 'TSLA': final_tsla_colour,
                                                                 'MSFT': final_msft_colour,
                                                                 'META': final_meta_colour
                                           })
-    st.table(table_SentimentFrequency)
+    # st.table(table_SentimentFrequency)
     st.plotly_chart(chart_SentimentFrequency)
     
 
@@ -608,17 +619,28 @@ with r4c2:
     st.markdown(
         f"""
         <p style="font-family: {final_font_family}; font-size: 24px; font-style: {font_style_selection}; font-weight: bold;">
-            Publishers 📰
+            Publisher Coverage by Company  📰
         </p>
         """,
         unsafe_allow_html=True,
     )
-    df_fn1 = filtered_df_fn.groupby('publisher').size().reset_index(name='Total')
-    chart_Publishers = px.bar(df_fn1,x='Total', y='publisher', template='seaborn')
-    chart_Publishers.update_traces(text=df_fn1['publisher'], textposition='inside')
+    # df_fn1 = filtered_df_fn.groupby('publisher').size().reset_index(name='Total')
+    # chart_Publishers = px.bar(df_fn1,x='Total', y='publisher', template='seaborn')
+    # chart_Publishers.update_traces(text=df_fn1['publisher'], textposition='inside')
+    # chart_update_layout(chart_Publishers)
+    # st.plotly_chart(chart_Publishers, use_container_width=True, height = 1000)
+
+    publisher_company_df = filtered_df_fn.groupby(['publisher','company']).size().reset_index(name='Total Article')
+    # Create a heatmap
+    chart_Publishers = px.bar(
+        publisher_company_df,
+        x='company',
+        y='Total Article',
+        color='publisher',
+        labels={'Total Article': 'Number of Articles'}
+    )
     chart_update_layout(chart_Publishers)
-    st.plotly_chart(chart_Publishers, use_container_width=True, height = 1000)
-    
+    st.plotly_chart(chart_Publishers)
 #======================================================================================================================================== 
 # Tab
 pricing_data, news = st.tabs(['Stock Price', 'News'])
@@ -691,13 +713,14 @@ with fil_col4:
     hsd_html = save_plotly_plot('historicalprice_line', chart_HistoricalStockData)
     fnot_html = save_plotly_plot('news_line', chart_FrequencyofNewsOverTime)
     ssot_html = save_plotly_plot('sentiment_pie', chart_SentimentScoreOverTime)
+    ssac_html = save_plotly_plot('sentiment_scatter_plot', chart_SentimentFrequency)
     publisher = save_plotly_plot('publiser_bar', chart_Publishers)
     sdbt_html = save_plotly_plot('topics_bar', chart_TopicFrequency)
     wf_html = save_word_cloud('wordcloud', word_frequncy)
     # ssac_html = save_altair_plot('companies_sentiment_bar', chart_SentimentScoreAcrossCompanies)
     hpay_table_html = getTableHTML(table_HighestPriceAcrossYear, False, 1)
     nnac_table_html = getTableHTML(table_NumberofNewsAcrossCompanies, False, 1)
-    ssac_table_html = getTableHTML(table_SentimentFrequency, True, 2)
+    # ssac_table_html = getTableHTML(table_SentimentFrequency, True, 2)
     tp_table_html = getTableHTML(table_TopPublishers, False, 1)
 
     wkhtml_path = pdfkit.configuration(wkhtmltopdf = '/usr/bin/wkhtmltopdf')
@@ -710,7 +733,7 @@ with fil_col4:
         publishers_url = publisher,
         hpay_table = hpay_table_html,
         nnac_table = nnac_table_html,
-        ssac_table = ssac_table_html,
+        ssac_table = ssac_html,
         tp_table = tp_table_html,
         selected_font = final_font_family,
         selected_font_style = font_style_selection,
