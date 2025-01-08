@@ -6,16 +6,18 @@ import gdown
 import os
 
 #download model from google drive
-model_dir = './model'
-url = 'https://drive.google.com/drive/folders/175Skml7CqvbfgS14oOctFzx-7go72jak?usp=drive_link'
-if not os.path.exists(model_dir):
-    gdown.download_folder(url)
+# gpt2model_dir = './model'
+# gpt2_url = 'https://drive.google.com/drive/folders/175Skml7CqvbfgS14oOctFzx-7go72jak?usp=drive_link'
+bertmodel_dir = './modelBERT'
+bert_url = 'https://drive.google.com/drive/folders/1_mugHOAaCPIUgXX6l9pfLICuF5kwGIiz?usp=drive_link'
+if not os.path.exists(bertmodel_dir):
+    gdown.download_folder(bert_url)
 
 st.title('🤖 Sentiment Analyzer')
 
 #Sentiment Analyzer
 st.subheader('Sentiment Analyzer')
-st.markdown('#### Please put your financial headline here: ')
+st.markdown('#### Please put your online news headline here: ')
 headline_input = st.text_input('headline', label_visibility="collapsed")
 st.button('Predict')
 
@@ -30,21 +32,29 @@ st.button('Predict')
 
 # print(response['choices'][0]['message']['content'])
 #------------------------------------------------------------------------------------------------------------------------------
-# Load the tokenizer and model
-# tokenizer = BertTokenizer.from_pretrained('./model')
-# model = BertForSequenceClassification.from_pretrained('./model')
 # tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 # tokenizer = BertTokenizer.from_pretrained('yiyanghkust/finbert-tone')
 # model = BertForSequenceClassification.from_pretrained('yiyanghkust/finbert-tone', num_labels=3, output_hidden_states=True)
-@st.cache_resource
-def load_model():
-    model = GPT2ForSequenceClassification.from_pretrained(model_dir)
-    return model
-
+# Load the tokenizer and model
 @st.cache_resource
 def load_tokenizer():
-    tokenizer = GPT2Tokenizer.from_pretrained(model_dir)
+    tokenizer = BertTokenizer.from_pretrained(bertmodel_dir)
     return tokenizer
+
+@st.cache_resource
+def load_model():
+    model = BertForSequenceClassification.from_pretrained(bertmodel_dir)
+    return model
+
+# @st.cache_resource
+# def load_model():
+#     model = GPT2ForSequenceClassification.from_pretrained(gpt2model_dir)
+#     return model
+
+# @st.cache_resource
+# def load_tokenizer():
+#     tokenizer = GPT2Tokenizer.from_pretrained(gpt2model_dir)
+#     return tokenizer
 #------------------------------------------------------------------------------------------------------------------------------
 # Tokenize the input
 # inputs = tokenizer(headline_input, return_tensors='pt')
