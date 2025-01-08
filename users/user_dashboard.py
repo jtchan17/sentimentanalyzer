@@ -546,6 +546,7 @@ with r3c1:
                                                                 'META': final_meta_colour
                                           })
     # st.table(table_SentimentFrequency)
+    chart_update_layout(chart_SentimentFrequency)
     st.plotly_chart(chart_SentimentFrequency)
     
 
@@ -637,6 +638,7 @@ with r4c2:
         x='company',
         y='Total Article',
         color='publisher',
+        template='plotly_dark',
         labels={'Total Article': 'Number of Articles'}
     )
     chart_update_layout(chart_Publishers)
