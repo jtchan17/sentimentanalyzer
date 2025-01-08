@@ -284,10 +284,10 @@ with fil_col2:
 with fil_col3:
     def clear_filters():
         st.session_state['aapll'] = True
-        st.session_state['amznn'] = True
-        st.session_state['metaa'] = True
-        st.session_state['msftt'] = True
-        st.session_state['tslaa'] = True
+        st.session_state['amzn'] = True
+        st.session_state['meta'] = True
+        st.session_state['msft'] = True
+        st.session_state['tsla'] = True
         st.session_state['select_year'] = 'All'
         st.session_state['positive'] = True
         st.session_state['negative'] = True
