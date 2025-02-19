@@ -124,16 +124,19 @@ def home():
                 if login_Button:
                     try:
                         user = auth.sign_in_with_email_and_password(email=loginEmail, password=loginPassword)
+                        st.write('signing in with email and password')
+                        st.write(user)
                         # Fetch user details from Firestore
-                        user_data = db.child(user['localId']).child("Username").get().val() 
+                        # user_data = db.child(user['localId']).child("Username").get().val() 
                         st.session_state.role = role
-                        st.session_state.username = user_data
+                        # st.session_state.username = user_data
                         st.session_state.email = loginEmail
                         st.session_state.localID = user['localId']
                         st.session_state.user = user
                         st.rerun()
                     except Exception as e:
-                        st.error(f"Error: {json.loads(e.args[1])['error']['message']}")
+                        # st.error(f"Error: {json.loads(e.args[1])['error']['message']}")
+                        st.error(f"Full Error: {e}")
                         st.warning('Incorrect Username/Password.')
             elif role == "Guest":
                 if st.button("Log in"):
@@ -174,7 +177,7 @@ user = st.session_state.localID
 user = st.session_state.user
 
 logout_page = st.Page(logout, title="Log out", icon=":material/logout:")
-settings_page = st.Page("users/edit_profile.py", title="Edit Profile", icon=":material/edit:")
+# settings_page = st.Page("users/edit_profile.py", title="Edit Profile", icon=":material/edit:")
 
 user= st.Page(
     "users/user_dashboard.py",
@@ -209,7 +212,7 @@ guest = st.Page(
 )
 
 account_pages = [logout_page]
-users_pages = [user, user_SA, user_analysis, settings_page, user_help]
+users_pages = [user, user_SA, user_analysis, user_help]
 guest_pages = [guest]
 
 # st.title("Request manager")

@@ -48,7 +48,8 @@ df_sp = pd.DataFrame(df_sp)
 # Side bar (Login)
 with st.sidebar:
     # st.title(f'Welcome {st.session_state.role}! :sunglasses:')
-    st.title(f'Welcome {st.session_state.username}! :sunglasses:')
+    # st.title(f'Welcome {st.session_state.username}! :sunglasses:')
+    st.title(f'Welcome! :sunglasses:')
     custom_colors = {
         'Red': '#EF553B',
         'Blue': '#636EFA',
